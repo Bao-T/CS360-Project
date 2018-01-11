@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+  
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Track Editor</title>
+    
+    <link rel='stylesheet' type='text/css' href='Foundation/bootstrap-3.3.7-dist/css/bootstrap.min.css'>
+    
+    <style type='text/css'>
+    
+      body {
+        padding-top: 80px;
+      }
+    
+      .fileBrowser {
+    
+        visibility: hidden;
+        float : right;
+      }
+      
+      .playerBlock {
+      
+        margin-top : 10px;
+        margin-bottom : 10px;
+      }
+      
+      #canvas {
+
+        display : block;
+        margin-top : 1em;
+        margin-left : auto;
+        margin-right : auto;
+        background-color : #FFF;
+        width : 90%;
+        height : auto;
+      }
+      
+      #trackFileNameLabel {
+      
+        margin-left : 5pt;
+      }
+      
+      .fg {
+      
+        display : flex;
+        flex-flow : row wrap;
+        align-items : center;
+        
+      }
+      
+    </style>
+        
+  </head>
+
+  <body onload='init()'>
+  
+    <nav class='navbar navbar-default navbar-fixed-top'>
+      <div class='container'>
+        <div class='navbar-header'>
+          <button type='button' class='navbar-toggle collapsed' data-toggle='collapse' data-target='#navbar' aria-expanded='false' aria-controls='navbar'>
+            <span class='sr-only'>Toggle navigation</span>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+          </button>
+          <a class='navbar-brand' href='#'>Track Editor</a>
+        </div>
+        <div id='navbar' class='collapse navbar-collapse'>
+          <ul class='nav navbar-nav'>
+            <li id='li_navNew'><a href='#' title='New Track Model' id='navNew'><span class='glyphicon glyphicon-file' aria-hidden='true'></span></a></li>
+            <li id='li_navOpen'><a href='#' title='Open Track Model' id='navOpen' onclick='document.getElementById("loadTrackModelInput").click()'><span class='glyphicon glyphicon-folder-open' aria-hidden='true'></span></a></li>
+            <li id='li_navSave'><a href='#' title='Save Track Model' id='navSave'><span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span></a></li>
+            <li id='li_navDelete'><a href='#' title='Delete' id='navDelete'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a></li>
+            <li id='li_navTest'><a href='#' title='Test Track' id='navTest'><span class='glyphicon glyphicon-play' aria-hidden='true'></span></a></li>
+            <li id='li_navExport'><a href='#' title='Export' id='navExport'><span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span></a></li>            
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class='container'>
+    
+      <!-- Track image panel -->
+      <div class='panel panel-default'>
+      
+        <div class='panel-body'>
+        
+          <div class='fg'>
+          
+            <div class='col-xs-1'>
+              <label id='trackNumberLabel'>Track#</label>
+            </div>
+            
+            <div class='col-xs-2'>
+              <input type='text' class='form-control' id='trackNumberField' value='1'/>
+            </div>
+            
+            <button type='button' class='btn btn-default' id='trackImageImportButton' onclick='document.getElementById("loadTrackImageInput").click()'>Import</button>
+            <label id='trackFileNameLabel'>(no track image selected)</label>
+          
+          </div>
+          
+        </div>
+
+      </div>
+      
+      <!-- Main editor / viewer panel -->
+      <div class='panel panel-default'>
+        <div class='panel-body' id='canvasHost'>
+          <canvas id='canvas' width='800' height='600'>:(</canvas>
+        </div>
+      </div>
+      
+      <!-- Player select panel -->
+      <div class='panel panel-default'>
+      
+        <div class='panel-heading'>Players</div>
+        <div class='panel-body'>
+        
+          <div class='playerBlock'>
+          
+            <label>Player 1</label>
+            
+            <button type='button' class='btn btn-default btn-lg' id='player1Icon' onclick='document.getElementById("loadPlayer1ImageInput").click()'>
+              <span class='glyphicon glyphicon-picture' aria-hidden='true'></span>
+            </button>            
+              
+            <div class='btn-group' role='group' aria-label='Player1 Configuration'>
+              <button type='button' disabled class='btn btn-default btn-sm' id='player1PlaceButton'>
+                <span class='glyphicon glyphicon-map-marker' aria-hidden='true'></span>
+              </button>
+              <button type='button' disabled class='btn btn-default btn-sm' id='player1SettingsButton' data-toggle='collapse' data-target='#player1Settings'>
+                <span class='glyphicon glyphicon-cog' aria-hidden='true'></span>
+              </button>
+              <button type='button' disabled class='btn btn-default btn-sm' id='player1DeleteButton'>
+                <span class='glyphicon glyphicon-trash' aria-hidden='true'></span>
+              </button>
+            </div>
+            
+            <input type='file' class='fileBrowser' id='loadPlayer1ImageInput'/>
+            
+          </div>
+          
+          <div class='collapse well' id='player1Settings'>
+          
+            <div class='fg'>
+            
+              <div class='col-xs-2'>
+                <label id='player1ScaleLabel'>Scale</label>
+              </div>
+              
+              <div class='col-xs-2'>
+                <input type='text' class='form-control' id='player1ScaleText' value='1'/>
+              </div>
+
+              <div class='col-xs-4'>
+                <input type='range' class='form-control' id='player1ScaleSlider' min='0' max='20' step='1' value='10'/>
+              </div>
+              
+            </div>
+            
+            <div class='fg'>
+            
+              <div class='col-xs-2'>
+                <label id='player1AngleLabel'>Angle</label>
+              </div>
+              
+              <div class='col-xs-2'>
+                <input type='text' class='form-control' id='player1AngleText' value='0'/>
+              </div>
+
+              <div class='col-xs-4'>
+                <input type='range' class='form-control' id='player1AngleSlider' min='0' max='359' step='1' value='0'/>
+              </div>
+              
+            </div>
+
+          </div>
+          
+          
+          <div class='playerBlock'>
+          
+            <label>Player 2</label>
+            
+            <button type='button' class='btn btn-default btn-lg' id='player2Icon' onclick='document.getElementById("loadPlayer2ImageInput").click()'>
+              <span class='glyphicon glyphicon-picture' aria-hidden='true'></span>
+            </button>
+          
+            <div class='btn-group' role='group' aria-label='Player2 Configuration'>
+              <button type='button' disabled class='btn btn-default btn-sm' id='player2PlaceButton'>
+                <span class='glyphicon glyphicon-map-marker' aria-hidden='true'></span>
+              </button>
+              <button type='button' disabled class='btn btn-default btn-sm' id='player2SettingsButton' data-toggle='collapse' data-target='#player2Settings'>
+                <span class='glyphicon glyphicon-cog' aria-hidden='true'></span>
+              </button>
+              <button type='button' disabled class='btn btn-default btn-sm' id='player2DeleteButton'>
+                <span class='glyphicon glyphicon-trash' aria-hidden='true'></span>
+              </button>
+            </div>
+          
+            <input type='file' class='fileBrowser' id='loadPlayer2ImageInput'/>
+            
+          </div>
+          
+          <div class='collapse well' id='player2Settings'>
+          
+            <div class='fg'>
+            
+              <div class='col-xs-2'>
+                <label id='player2ScaleLabel'>Scale</label>
+              </div>
+              
+              <div class='col-xs-2'>
+                <input type='text' class='form-control' id='player2ScaleText' value='1'/>
+              </div>
+
+              <div class='col-xs-4'>
+                <input type='range' class='form-control' id='player2ScaleSlider' min='0' max='20' step='1' value='10'/>
+              </div>
+              
+            </div>
+            
+            <div class='fg'>
+            
+              <div class='col-xs-2'>
+                <label id='player2AngleLabel'>Angle</label>
+              </div>
+              
+              <div class='col-xs-2'>
+                <input type='text' class='form-control' id='player2AngleText' value='0'/>
+              </div>
+
+              <div class='col-xs-4'>
+                <input type='range' class='form-control' id='player2AngleSlider' min='0' max='359' step='1' value='0'/>
+              </div>
+              
+            </div>
+
+          </div>
+          
+        </div>
+      
+      </div>
+            
+    </div>
+    
+    <div>
+    
+      <input type='file' class='fileBrowser' id='loadTrackModelInput' />
+      <input type='file' class='fileBrowser' id='loadTrackImageInput' />
+      
+    </div>
+    
+    <script src='Foundation/jquery-3.2.0/jquery.min.js'></script>    
+    <script src='Foundation/bootstrap-3.3.7-dist/js/bootstrap.min.js'></script>
+    <script src='Foundation/poly-decomp.js-4558762/build/decomp.min.js'></script>
+    <script src='Foundation/matter_js/matter.min.js'></script>
+    <script src='Foundation/gl-matrix/gl-matrix-min.js'></script>
+    
+    <script>
+    
+      // Minimise global namespace pollution - all relevant types reside in OverDrive
+      var OverDrive = {}
+      
+      OverDrive.canvas = document.getElementById('canvas');
+      OverDrive.context = OverDrive.canvas.getContext('2d');
+      
+      function init() {
+        
+        // Build stage graph
+        var editor = OverDrive.EditorStage.Create(/*OverDrive.hostModel*/);
+        var testStage = OverDrive.TestStage.Create();
+        
+        editor.setTransition('test', testStage);
+        testStage.setTransition('endtest', editor);
+        
+        // Point to initial (root) stage
+        OverDrive.stageGraph = editor;
+
+        // Start graph execution
+        OverDrive.stageGraph.init();
+      }
+      
+    </script>
+    
+    <script src='track_editor_foundation/metlib.js'></script>
+    <script src='track_editor_foundation/region.js'></script>
+    <script src='track_editor_foundation/graph.js'></script>
+    <script src='track_editor_foundation/proximity.js'></script>
+    <script src='track_editor_foundation/background.js'></script>
+    <script src='track_editor_foundation/editor_model.js'></script>
+    <script src='track_editor_foundation/editor.js'></script>
+    <script src='track_editor_foundation/editor_stage.js'></script>
+    <script src='track_editor_foundation/testtrack.js'></script>
+    
+    <!-- Game engine modules -->
+    <script src='track_editor_foundation/Engine/background.js'></script>
+    <script src='track_editor_foundation/Engine/clock.js'></script>
+    <script src='track_editor_foundation/Engine/CollisionModel.js'></script>
+    <script src='track_editor_foundation/Engine/player.js'></script>
+    <script src='track_editor_foundation/Engine/path.js'></script>
+    <script src='track_editor_foundation/Engine/sprite.js'></script>
+    <script src='track_editor_foundation/Engine/SpriteSheet.js'></script>
+    <script src='track_editor_foundation/Engine/system.js'></script>
+    <script src='track_editor_foundation/Engine/util.js'></script>
+    
+  </body>
+  
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<!-- Racer -->
+
+<html>
+
+  <head>
+  
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>OverDrive</title>
+    
+    <link rel='stylesheet' type='text/css' href='Foundation/bootstrap-3.3.7-dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' type='text/css' href='layout.css'>
+    
+  </head>
+  
+  <body onload="OverDrive.init()">
+  
+    <img src='Assets/Images/banner.jpg' class='banner'/>
+    
+    <div id='GameDiv'>  
+      <canvas id='canvas' width='800' height='600'>:(</canvas>
+    </div>
+    
+    <div>
+    
+      <label id='actualTime'></label><br>
+      <label id='timeDelta'></label><br>
+      <label id='fps'></label><br>
+      <label id='spf'></label><br>
+    
+    </div>
+    
+    <script src='Foundation/jquery-3.2.0/jquery.min.js'></script>    
+    <script src='Foundation/bootstrap-3.3.7-dist/js/bootstrap.min.js'></script>
+    <script src='Foundation/poly-decomp.js-4558762/build/decomp.min.js'></script>
+    <script src='Foundation/matter_js/matter.min.js'></script>
+    <script src='Foundation/gl-matrix/gl-matrix-min.js'></script>
+    
+    <script>
+    
+      // Minimise global namespace pollution - all relevant types reside in OverDrive
+      var OverDrive = {
+      
+        Game : { tracks : [], scenery : [] },
+        Stages : {},
+        stageGraph : null
+      }
+      
+      OverDrive.canvas = document.getElementById('canvas');
+      OverDrive.context = OverDrive.canvas.getContext('2d');      
+      
+      OverDrive.init = function() {
+      
+        // Create and run game stage graph        
+        let splashScreen = OverDrive.Stages.SplashScreen.Create();
+        let mainMenu = OverDrive.Stages.MainMenu.Create();
+        let credits = OverDrive.Stages.Credits.Create();
+        let inputConfirm = OverDrive.Stages.InputConfirm.Create();
+        let mainGame = OverDrive.Stages.MainGame.Create();
+        let settings = OverDrive.Stages.Config.Create();
+        let leaderboard = OverDrive.Stages.Leaderboard.Create();
+        
+        splashScreen.setTransition('mainMenu', mainMenu);
+        mainMenu.setTransition('credits', credits);
+        mainMenu.setTransition('mainGame', inputConfirm);
+        mainMenu.setTransition('config', settings);
+        mainMenu.setTransition('highScores', leaderboard);
+        
+        leaderboard.setTransition('mainMenu', mainMenu);
+        credits.setTransition('mainMenu', mainMenu);
+        inputConfirm.setTransition('mainGame', mainGame);
+        inputConfirm.setTransition('mainMenu', mainMenu);
+        mainGame.setTransition('mainMenu', mainMenu);
+        settings.setTransition('mainMenu', mainMenu);
+        
+        OverDrive.stageGraph = splashScreen;
+        
+        OverDrive.stageGraph.init();
+      }
+      
+    </script>
+        
+    <!-- Game engine modules -->
+    <!--<script src='Engine/overdrive.engine.min.js'></script>-->
+    <script src='Engine/src/metlib.js'></script>
+    <script src='Engine/src/AnimationSequence.js'></script>
+    <script src='Engine/src/background.js'></script>
+    <script src='Engine/src/clock.js'></script>
+    <script src='Engine/src/CollisionModel.js'></script>
+    <script src='Engine/src/region.js'></script>
+    <script src='Engine/src/graph.js'></script>
+    <script src='Engine/src/path.js'></script>
+    <script src='Engine/src/pickups.js'></script>
+    <script src='Engine/src/player.js'></script>
+    <script src='Engine/src/player_states.js'></script>
+    <script src='Engine/src/sprite.js'></script>
+    <script src='Engine/src/system.js'></script>
+    <script src='Engine/src/util.js'></script>
+    <script src='config.js'></script>
+    
+    <script>
+    
+      OverDrive.Game.system = new OverDrive.Game.System();
+      
+    </script>
+    
+    <!-- Game stages -->
+    <!--<script src='Engine/overdrive.stages.min.js'></script>-->
+    <script src='Engine/src/Stages/config_stage.js'></script>
+    <script src='Engine/src/Stages/credits_stage.js'></script>
+    <script src='Engine/src/Stages/highscores_stage.js'></script>
+    <script src='Engine/src/Stages/inputconfirm_stage.js'></script>
+    <script src='Engine/src/Stages/splashscreen_stage.js'></script>
+    <script src='Engine/src/Stages/maingame_stage.js'></script>
+    <script src='Engine/src/Stages/maingame_backend.js'></script>
+    <script src='Engine/src/Stages/maingame_frontend.js'></script>
+    <script src='Engine/src/Stages/mainmenu_stage.js'></script>
+    
+    <!-- Level and Track models -->
+    <script src='Levels/carpark.odt.js'></script>
+    <script src='Levels/carpark.od_scenery.js'></script>
+    
+  </body>
+  
+</html>

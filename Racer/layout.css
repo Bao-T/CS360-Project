@@ -1,0 +1,205 @@
+
+/* OverDrive page layout and style properties */
+
+
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+@import url('https://fonts.googleapis.com/css?family=Faster+One');
+
+body {
+  
+  background-color : #000;
+}
+
+.banner {
+
+  display : block;
+  margin-top : 5px;
+  margin-bottom : 10px;
+  margin-left : auto;
+  margin-right : auto;
+  //text-align : center;
+}
+
+.settingsField {
+    
+  position: absolute;
+}
+
+.settingsLabel {
+  
+  text-align : right;
+}
+
+#GameDiv {
+
+  position : relative;
+  
+  width : 804px;
+  height : 604px;
+  margin-left : auto;
+  margin-right : auto;
+  border-radius: 5px;
+  background-color: black;
+  border: 2px solid #ccc;
+}
+
+#canvas {
+  
+  position: absolute;
+  left : 0px;
+  top : 0px;
+  z-index : 0;
+}
+
+
+
+#player1Div {
+
+  position : absolute;
+  
+  width : 350px;
+  height : 400px;
+  
+  left : 35px;
+  top : 10px;
+  
+  border-radius: 5px;
+  background-color: #fff9;
+}
+
+#player2Div {
+
+  position : absolute;
+  
+  width : 350px;
+  height : 400px;
+  
+  left : 415px;
+  top : 10px;
+  
+  border-radius: 5px;
+  background-color: #fff9;
+}
+
+
+
+.playerSettingsHeader {
+  
+  width : 350px;
+  text-align : center;
+  font-weight : bold;
+}
+
+.playerNameLabel {
+  
+  left : 10px;
+  top : 65px;
+}
+
+.playerNameField {
+  
+  left: 165px;
+  top: 60px;
+}
+
+
+.rinput {
+  
+  left : 40px;
+  top : 110px;
+}
+
+.inputButtonBase {
+
+  margin-left : 20px;
+  margin-right : 40px;
+}
+
+
+.accelKeyLabel {
+  
+  left : 10px;
+  top : 195px;
+}
+
+.accelKeyField {
+  
+  left : 165px;
+  top : 190px;
+}
+
+/* -------------------------- */
+
+.brakeKeyLabel {
+   
+  left : 10px;
+  top : 245px;
+  
+}
+
+.brakeKeyField {
+  
+  left : 165px;
+  top : 240px;
+}
+
+/* -------------------------- */
+
+.leftKeyLabel {
+   
+  left : 10px;
+  top : 295px;
+}
+
+.leftKeyField {
+  
+  left : 165px;
+  top : 290px;
+}
+
+/* -------------------------- */
+
+.rightKeyLabel {
+   
+  left : 10px;
+  top : 345px;
+}
+
+.rightKeyField {
+  
+  left : 165px;
+  top : 340px;
+}
+
+/* -------------------------- */
+
+#configAcceptButton {
+  
+  left : 290px;
+  top : 500px;
+  width : 100px;
+}
+
+#configCancelButton {
+  
+  left : 410px;
+  top : 500px;
+  width : 100px;
+}
+
+/* -------------------------- */
+
+#returnToMenuButton {
+  
+  left : 250px;
+  top : 500px;
+  width : 300px;
+  z-index : 1;
+}
+
+/* -------------------------- */
+
+#actualTime, #timeDelta, #fps, #spf {
+  
+  color : white;
+}
