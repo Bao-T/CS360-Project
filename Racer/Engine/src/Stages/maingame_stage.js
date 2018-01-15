@@ -761,11 +761,13 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         
         // Keyboard input
         
-        if (this.keyPressed(overdrive.settings.players[0].keys.forward)) {
+        if (this.hasNewSwing()) {
           
           var F = player.forwardDirection();
-          
-          player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
+
+			player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
+			this.resetSwing();
+          //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
         }
         
         if (this.keyPressed(overdrive.settings.players[0].keys.reverse)) {
