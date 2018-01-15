@@ -161,6 +161,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.keyDown = null;
     this.mouseButton = false;
     this.mousePositions = null; //array of {x, y, timestamp} objects, to calculate speed
+    this.newSwing = false;
 
     this.raceStarted = false;
     
@@ -411,12 +412,24 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             return { x: 0, y: 0, ts: overdrive.gameClock.actualTimeElapsed() };
     }
 
-    stage.MainGame.prototype.getMouseDown = function () {
+    this.getMouseDown = function () {
         //public function to check if the mouse is up or down
         return self.mouseButton;
     }
 
-    stage.MainGame.prototype.getLastMousePos = function () {
+    stage.MainGame.prototype.getMouseDown = this.getMouseDown
+
+    //Has there been a new swing since the last time we checked?
+    this.hasNewSwing = function () {
+        return self.newSwing;
+    }
+
+    //We're done with this swing. Reset.
+    this.resetSwing = function () {
+        self.newSwing = false;
+    }
+
+    this.getLastMousePos = function () {
         //public function to get the last mouse position for a swing
         if (self.mousePositions !== null && self.mousePositions.length !== 0) {
             var c = self.mousePositions.length - 1;
@@ -426,7 +439,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             return { x: 0, y: 0, ts: overdrive.gameClock.actualTimeElapsed() };
     }
 
-    stage.MainGame.prototype.getLastVelocity = function () {
+    stage.MainGame.prototype.getLastMousePos = this.getLastMousePos
+
+    this.getLastVelocity = function () {
         //public function to get mouse velocity from last swing
         if (self.mousePositions !== null && self.mousePositions.length > 1 && self.mouseButton == false) {
             var sp = self.getStartSwing();
@@ -443,7 +458,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             return 0;
     }
 
-    stage.MainGame.prototype.getLastError = function () {
+    stage.MainGame.prototype.getLastVelocity = this.getLastVelocity
+
+    this.getLastError = function () {
         //public function to get the distance from the mouse down point to the end of the swing
         if (self.mousePositions !== null && self.mousePositions.length > 1) {
             var sp = self.mousePositions[0];
@@ -456,6 +473,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         else
             return -1000;
     }
+
+    stage.MainGame.prototype.getLastError = this.getLastError
 
     this.phaseInLoop = function() {
       
@@ -633,10 +652,14 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
     this.onMouseDown = function (event) {
         self.mousePositions.length = 0;
+        self.newSwing = false;
         self.mouseButton = true;
     }
 
     this.onMouseUp = function (event) {
+        if (self.mouseButton && self.mousePositions.length > 1)
+            //If the mousePositions array has multiple points, we have a new swing.
+            self.newSwing = true;
         self.mouseButton = false;
     }
 
@@ -738,11 +761,13 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         
         // Keyboard input
         
-        if (this.keyPressed(overdrive.settings.players[0].keys.forward)) {
+        if (this.hasNewSwing()) {
           
           var F = player.forwardDirection();
-          
-          player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
+
+			player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
+			this.resetSwing();
+          //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
         }
         
         if (this.keyPressed(overdrive.settings.players[0].keys.reverse)) {
