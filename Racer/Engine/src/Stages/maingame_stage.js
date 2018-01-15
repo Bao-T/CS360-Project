@@ -411,12 +411,14 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             return { x: 0, y: 0, ts: overdrive.gameClock.actualTimeElapsed() };
     }
 
-    stage.MainGame.prototype.getMouseDown = function () {
+    this.getMouseDown = function () {
         //public function to check if the mouse is up or down
         return self.mouseButton;
     }
 
-    stage.MainGame.prototype.getLastMousePos = function () {
+    stage.MainGame.prototype.getMouseDown = this.getMouseDown
+
+    this.getLastMousePos = function () {
         //public function to get the last mouse position for a swing
         if (self.mousePositions !== null && self.mousePositions.length !== 0) {
             var c = self.mousePositions.length - 1;
@@ -426,7 +428,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             return { x: 0, y: 0, ts: overdrive.gameClock.actualTimeElapsed() };
     }
 
-    stage.MainGame.prototype.getLastVelocity = function () {
+    stage.MainGame.prototype.getLastMousePos = this.getLastMousePos
+
+    this.getLastVelocity = function () {
         //public function to get mouse velocity from last swing
         if (self.mousePositions !== null && self.mousePositions.length > 1 && self.mouseButton == false) {
             var sp = self.getStartSwing();
@@ -443,7 +447,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             return 0;
     }
 
-    stage.MainGame.prototype.getLastError = function () {
+    stage.MainGame.prototype.getLastVelocity = this.getLastVelocity
+
+    this.getLastError = function () {
         //public function to get the distance from the mouse down point to the end of the swing
         if (self.mousePositions !== null && self.mousePositions.length > 1) {
             var sp = self.mousePositions[0];
@@ -456,6 +462,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         else
             return -1000;
     }
+
+    stage.MainGame.prototype.getLastError = this.getLastError
 
     this.phaseInLoop = function() {
       
