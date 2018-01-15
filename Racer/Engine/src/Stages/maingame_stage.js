@@ -419,6 +419,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         if (self.mousePositions !== null && self.mousePositions.length > 1 && self.mouseButton == false) {
             var sp = self.getStartSwing();
             var ep = self.getEndSwing();
+            if (ep.ts == sp.ts) {
+                //special case for "push" putt
+                sp = self.mousePositions[0];
+                ep = self.mousePositions[self.mousePositions.length - 1];
+            }
             var dist = self.getDist(sp, ep);
             return (dist / (ep.ts - sp.ts));
         }
@@ -430,7 +435,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         if (self.mousePositions !== null && self.mousePositions.length > 1) {
             var sp = self.mousePositions[0];
             var ep = self.getEndSwing();
-            return self.getDist(sp, ep);
+            if (ep.ts == sp.ts)
+                return 100; //arbitrary error for "push" putt
+            else
+                return self.getDist(sp, ep);
         }
         else
             return -1000;
