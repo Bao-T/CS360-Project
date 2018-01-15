@@ -76,7 +76,8 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         context.translate(pos.x, pos.y);
         context.rotate(theta);
         context.translate(-this.sprite.image.width * this.scale / 2, -this.sprite.image.height * this.scale / 2);
-        this.sprite.draw(0, 0, this.scale);
+
+        this.sprite.drawball(0, 0, this.scale);
         
         context.restore();
       }

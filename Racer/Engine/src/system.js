@@ -125,7 +125,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         
         {
           name : 'Player 2',
-          mode : gamelib.InputMode.Gamepad,
+          mode : gamelib.InputMode.Keyboard,
           keys : {
             
             forward : 'P',
