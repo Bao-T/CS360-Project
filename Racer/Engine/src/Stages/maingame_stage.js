@@ -347,18 +347,24 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       window.requestAnimationFrame(self.phaseInLoop);
     }
 
-    this.getDist = function(p1, p2)  {
+    this.getDist = function (p1, p2) {
+        //simple math distance function
         var xdist = p1.x - p2.x;
         var ydist = p1.y - p2.y;
         return (Math.sqrt((xdist * xdist) + (ydist * ydist)))
     }
 
     this.getStartSwingPos = function () {
+        //need at least two points to calculate distances
         if (self.mousePositions !== null && self.mousePositions.length > 1) {
+            //hold onto initial mouse down
             var i = self.mousePositions.length - 1;
             var lastPos = self.mousePositions[i];
             var dist = 0;
             var done = false;
+            //go through all mouse points, starting at the end. Find the
+            // point where the distance from that initial mouse down
+            // is largest. We'll call that the start of the swing.
             while (!done) {
                 var i = i - 1;
                 if (i === -1)
@@ -385,6 +391,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
     this.getEndSwing = function () {
         if (self.mousePositions !== null && self.mousePositions.length !== 0) {
+            //starting from the position of the start of the swing, find the mouse point
+            // that is closest to the initial mouse point to determine when the putter
+            // hits the ball
             var s = self.getStartSwingPos();
             var firstp = self.mousePositions[0];
             var dist = self.getDist(self.mousePositions[s], firstp);
@@ -403,10 +412,12 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getMouseDown = function () {
+        //public function to check if the mouse is up or down
         return self.mouseButton;
     }
 
     stage.MainGame.prototype.getLastMousePos = function () {
+        //public function to get the last mouse position for a swing
         if (self.mousePositions !== null && self.mousePositions.length !== 0) {
             var c = self.mousePositions.length - 1;
             return self.mousePositions[c];
@@ -416,6 +427,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getLastVelocity = function () {
+        //public function to get mouse velocity from last swing
         if (self.mousePositions !== null && self.mousePositions.length > 1 && self.mouseButton == false) {
             var sp = self.getStartSwing();
             var ep = self.getEndSwing();
@@ -432,6 +444,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getLastError = function () {
+        //public function to get the distance from the mouse down point to the end of the swing
         if (self.mousePositions !== null && self.mousePositions.length > 1) {
             var sp = self.mousePositions[0];
             var ep = self.getEndSwing();
