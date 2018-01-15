@@ -161,8 +161,6 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.keyDown = null;
     this.mouseButton = false;
     this.mousePositions = null; //array of {x, y, timestamp} objects, to calculate speed
-    this.startPuttPosition = { x: 0, y: 0 };
-    this.endPuttPosition = { x: 0, y: 0 };
 
     this.raceStarted = false;
     
@@ -363,6 +361,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             var done = false;
             while (!done) {
                 var i = i - 1;
+                if (i === -1)
+                    break;
                 var currPos = self.mousePositions[i];
                 var dtmp = self.getDist(lastPos, currPos);
                 if (dist <= dtmp)
@@ -370,7 +370,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
                 else
                     done = true;
             }
-            return i - 1;
+            return i + 1;
         }
         else
             return 0;
@@ -386,12 +386,13 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.getEndSwing = function () {
         if (self.mousePositions !== null && self.mousePositions.length !== 0) {
             var s = self.getStartSwingPos();
-            var sp = self.mousePositions[s];
             var firstp = self.mousePositions[0];
-            var dist = self.getDist(sp, firstp);
+            var dist = self.getDist(self.mousePositions[s], firstp);
             var done = false;
             while (!done) {
                 s = s + 1;
+                if (s == self.mousePositions.length)
+                    break;
                 var dtmp = self.getDist(self.mousePositions[s], firstp);
                 done = dtmp > dist;
             }
