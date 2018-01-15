@@ -9,7 +9,7 @@ const player2Name = 'Player 2';
 
 const track_friction = 0.01; // Smaller number means more slippery surface
 
-const player_mass = 1; // Larger number means it takes longer to accelerate to top speed
+const player_mass = 0.5; // Larger number means it takes longer to accelerate to top speed
 
 const player_move_speed = 1; // Bigger number = faster!
 
