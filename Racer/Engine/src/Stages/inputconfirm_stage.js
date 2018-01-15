@@ -113,7 +113,7 @@ OverDrive.Stages.InputConfirm = (function(stage, canvas, context) {
       
       if (overdrive.settings.players[0].mode==OverDrive.Game.InputMode.Keyboard) {
         
-        player1Message.push(overdrive.settings.players[0].name + ' - Press the Accelerate key to start');
+        player1Message.push(overdrive.settings.players[0].name + ' - Press the Q key to start');
       }
       else if (overdrive.settings.players[0].mode==OverDrive.Game.InputMode.Gamepad) {
         
@@ -209,7 +209,7 @@ OverDrive.Stages.InputConfirm = (function(stage, canvas, context) {
       
       if (overdrive.settings.players[1].mode==OverDrive.Game.InputMode.Keyboard) {
         
-        player2Message.push(overdrive.settings.players[1].name + ' - Press the Accelerate key to start');
+        player2Message.push(overdrive.settings.players[1].name + ' - Press the P key to start');
       }
       else if (overdrive.settings.players[1].mode==OverDrive.Game.InputMode.Gamepad) {
         
