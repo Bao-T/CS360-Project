@@ -199,6 +199,11 @@ body {
 
 /* -------------------------- */
 
+label.dbglabel {
+  
+  color : white;
+}
+
 #actualTime, #timeDelta, #fps, #spf {
   
   color : white;

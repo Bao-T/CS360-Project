@@ -1,4 +1,4 @@
-
+``
 //
 // Main game backend
 //
@@ -208,6 +208,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     document.getElementById('timeDelta').innerHTML = 'Time Delta = ' + Math.round(overdrive.gameClock.deltaTime);
     document.getElementById('fps').innerHTML = 'FPS = ' + overdrive.gameClock.frameCounter.getAverageFPS();
     document.getElementById('spf').innerHTML = 'SPF = ' + overdrive.gameClock.frameCounter.getAverageSPF();
+    document.getElementById('velo').innerHTML = 'Velocity = ' + stage.MainGame.prototype.getLastVelocity();
+    document.getElementById('error').innerHTML = 'Error = ' + stage.MainGame.prototype.getLastError();
   }
   
   stage.MainGame.prototype.player1CrossedFinishLine = function() {
