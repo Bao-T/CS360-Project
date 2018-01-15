@@ -161,6 +161,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.keyDown = null;
     this.mouseButton = false;
     this.mousePositions = null; //array of {x, y, timestamp} objects, to calculate speed
+    this.newSwing = false;
 
     this.raceStarted = false;
     
@@ -418,6 +419,16 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
     stage.MainGame.prototype.getMouseDown = this.getMouseDown
 
+    //Has there been a new swing since the last time we checked?
+    this.hasNewSwing = function () {
+        return self.newSwing;
+    }
+
+    //We're done with this swing. Reset.
+    this.resetSwing = function () {
+        self.newSwing = false;
+    }
+
     this.getLastMousePos = function () {
         //public function to get the last mouse position for a swing
         if (self.mousePositions !== null && self.mousePositions.length !== 0) {
@@ -641,10 +652,14 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
     this.onMouseDown = function (event) {
         self.mousePositions.length = 0;
+        self.newSwing = false;
         self.mouseButton = true;
     }
 
     this.onMouseUp = function (event) {
+        if (self.mouseButton && self.mousePositions.length > 1)
+            //If the mousePositions array has multiple points, we have a new swing.
+            self.newSwing = true;
         self.mouseButton = false;
     }
 
