@@ -114,7 +114,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
   
   let lapsToWin = 1;
-  
+  var level = 2;
   
   //
   // Public interface
@@ -151,7 +151,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 	//Decides which player can move.
     var turn = 1;
     // Main game-state specific variables
-    this.level = 1;
+    
     this.trackIndex = 0;
     
     this.backgroundImage = null;
@@ -187,15 +187,15 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     // Not called for initial state!
     this.preTransition = function(params) {
       
-      self.level = params.level;
-      self.trackIndex = self.level - 1;
+      self.level = level;
+      self.trackIndex = level - 1;
+        
       
       console.log('entering level ' + self.level);
     }
     
     this.init = function() {
 
-      
       // Setup keyboard
       if (self.keyDown === null) {
       
@@ -217,13 +217,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       $(document).mousedown(self.onMouseDown);
       $(document).mouseup(self.onMouseUp);
       
-      var track = tracks[self.trackIndex];
+      var track = tracks[level - 1];
       
       
       // Call front-end method to setup key elements of game environment
-      self.setup();
-      
-        
+	  self.setup();
       self.path = new OverDrive.Game.Path(self.regions, overdrive.engine.world, lapsToWin);
       
       self.player1.pathLocation = self.path.initPathPlacement();
@@ -559,9 +557,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.initPhaseOut = function() {
       
       // Add 200 points for winner
-      //self.winner.score += 200;
+      self.winner.score += 200;
       
-      //self.winnerMessage = self.winner.pid + ' Wins!!!!!';
+      self.winnerMessage = self.winner.pid + ' Wins!!!!!';
       
       window.requestAnimationFrame(self.phaseOutLoop);
     }
@@ -584,14 +582,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       //var textMetrics = context.measureText(self.winnerMessage);
       //context.fillText(self.winnerMessage, canvas.width * 0.5 - textMetrics.width / 2, 300);
       
-      if (self.keyPressed('ESC')) {
         
         window.requestAnimationFrame(self.leaveStage);
-      }
-      else {
-      
-        window.requestAnimationFrame(self.phaseOutLoop);
-      }
+     
     }
     
     this.leaveStage = function() {
@@ -769,12 +762,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       const p1InputMethod = overdrive.settings.players[0].mode;
       
-      // Gamepad input
-      if (p1InputMethod == OverDrive.Game.InputMode.Gamepad) {
-      
-        this.handleGamepadInput(player, 0, deltaTime);
-      }
-      else if (p1InputMethod == OverDrive.Game.InputMode.Keyboard) {
+      if (p1InputMethod == OverDrive.Game.InputMode.Keyboard) {
         
         // Keyboard input
         if (turn == 1){
@@ -786,6 +774,17 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 				player.score = player.score +1;
 				this.resetSwing();
 				turn = 2;
+				if (level != 1){
+					level = 1;
+					this.preTransition();
+					}
+				//this.renderMainScene();
+				
+				
+				
+				
+				
+				
 				
 			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
 			}
@@ -799,6 +798,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			  
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
 			  player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			  
 			}
 		}
 	  }
@@ -822,12 +822,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       const inputMethod = overdrive.settings.players[1].mode;
       
-      // Gamepad input
-      if (inputMethod == OverDrive.Game.InputMode.Gamepad) {
-      
-        this.handleGamepadInput(player, 1, deltaTime);
-      }
-      else if (inputMethod == OverDrive.Game.InputMode.Keyboard) {
+      if (inputMethod == OverDrive.Game.InputMode.Keyboard) {
       
         if (turn == 2){
 			if (this.hasNewSwing()) {
@@ -838,6 +833,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 				player.score = player.score +1;
 				this.resetSwing();
 				turn = 1;
+				
+				
 				
 			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
 			}
