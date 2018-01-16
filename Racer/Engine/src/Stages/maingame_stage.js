@@ -111,7 +111,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   let overdrive = OverDrive.Game.system;
   let tracks = OverDrive.Game.tracks;
   let scenery = OverDrive.Game.scenery;
-  
+
   
   let lapsToWin = 1;
   
@@ -177,7 +177,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     this.pickupTypes = null; // Pickup TYPES
     this.pickupArray = null; // Pickup INSTANCES
-    
+    this.target = new OverDrive.Game.Target();
     
     //
     // Stage interface implementation
@@ -337,9 +337,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         
           collector.addPoints(0);
         }
-      } );
-      
-      
+      });
+
       self.countDownSecondsElapsed = 0;
       overdrive.gameClock.tick();
       
@@ -418,6 +417,18 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getMouseDown = this.getMouseDown
+
+    //Are we currently in a swing?
+    this.isInNewSwing = function () {
+        return self.mouseButton && this.mousePositions.length > 0;
+    }
+
+    this.getFirstSwing = function () {
+        if (this.mousePositions.length > 0)
+            return this.mousePositions[0];
+        else
+            return { x: 0, y: 0, ts: overdrive.gameClock.actualTimeElapsed() };
+    }
 
     //Has there been a new swing since the last time we checked?
     this.hasNewSwing = function () {
@@ -637,7 +648,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       self.leaveState.params = null;
     }
     
-    
+
     // Event handling functions
     
     this.onKeyDown = function(event) {
@@ -710,7 +721,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
         self.backgroundImage.draw();
       }
-      
+
       // Draw player1
       if (self.player1) {
       
@@ -724,7 +735,12 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         self.player2.draw();
         //self.player2.drawBoundingVolume('#FFF');
       }
-      
+
+      if (self.isInNewSwing()) {
+          self.target.draw(this.mousePositions[0].x, this.mousePositions[0].y);
+      }
+
+
       // Render pickups
       OverDrive.Game.drawObjects(self.pickupArray);
     }

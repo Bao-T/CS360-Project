@@ -5,7 +5,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
     
     var self = this;
     var alpha = 1;
-	var fader = 0;
+    var fader = 0;
     this.onLoaded = function() {
     
       self.spriteLoaded = true;
@@ -25,7 +25,6 @@ OverDrive.Game = (function(gamelib, canvas, context) {
       if (self.spriteLoaded) {
       
         context.drawImage(self.image, x, y, self.image.width * scale, self.image.height * scale); 
-		//context.drawImage(arrow, x, y, self.image.width * scale, self.image.height * scale); 
       }
     }
 	 this.drawball = function(x, y, scale) {
@@ -34,19 +33,17 @@ OverDrive.Game = (function(gamelib, canvas, context) {
 		context.save();
 		context.globalAlpha=1;
         context.drawImage(self.image, x, y, self.image.width * scale, self.image.height * scale);
-		context.restore();
-		context.save();
 		fader = fader + 0.01;
-		if (fader >= 1){
-			fader = -1
+		if (fader >= 1) {
+		    fader = -1
 		}
-		context.globalAlpha=Math.abs(fader);
-		context.drawImage(arrow, x, y-20, self.image.width * scale, self.image.height*2);
+		context.globalAlpha = Math.abs(fader);
+		context.drawImage(arrow, x, y - 20, self.image.width * scale, self.image.height * 2);
 		context.restore();
       }
-    }
-    var arrow = new Image();
-    arrow.onload = this.onLoaded;
+	 }
+	var arrow = new Image();
+	arrow.onload = this.onLoaded;
 	arrow.src = "Assets//Images//arrow.png";
     this.spriteLoaded = false;
     this.image = new Image();
