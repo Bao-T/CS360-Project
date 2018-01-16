@@ -131,7 +131,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   stage.MainGame = function() {
     
     var self = this;
-  
+	
     this.transitionLinks = {
       
       mainMenu : null
@@ -148,8 +148,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       id : null,
       params : null
     };
-
-    
+	//Decides which player can move.
+    var turn = 1;
     // Main game-state specific variables
     this.level = 1;
     this.trackIndex = 0;
@@ -427,6 +427,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     //We're done with this swing. Reset.
     this.resetSwing = function () {
         self.newSwing = false;
+		
     }
 
     this.getLastMousePos = function () {
@@ -491,7 +492,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       // Draw countdown
       context.fillStyle = '#FFF';
-      context.font = '50pt Amatic SC';
+      context.font = '50pt Impact';
     
       var timeToDisplay = 3 - Math.floor(self.countDownSecondsElapsed);
       var textMetrics = context.measureText(timeToDisplay);
@@ -547,9 +548,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.initPhaseOut = function() {
       
       // Add 200 points for winner
-      self.winner.score += 200;
+      //self.winner.score += 200;
       
-      self.winnerMessage = self.winner.pid + ' Wins!!!!!';
+      //self.winnerMessage = self.winner.pid + ' Wins!!!!!';
       
       window.requestAnimationFrame(self.phaseOutLoop);
     }
@@ -567,10 +568,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       self.renderMainScene();
       
       // Draw winner message
-      context.fillStyle = '#FFF';
-      context.font = '50pt Amatic SC';
-      var textMetrics = context.measureText(self.winnerMessage);
-      context.fillText(self.winnerMessage, canvas.width * 0.5 - textMetrics.width / 2, 300);
+      //context.fillStyle = '#FFF';
+      //context.font = '50pt Amatic SC';
+      //var textMetrics = context.measureText(self.winnerMessage);
+      //context.fillText(self.winnerMessage, canvas.width * 0.5 - textMetrics.width / 2, 300);
       
       if (self.keyPressed('ESC')) {
         
@@ -760,35 +761,31 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       else if (p1InputMethod == OverDrive.Game.InputMode.Keyboard) {
         
         // Keyboard input
-        
-        if (this.hasNewSwing()) {
-          
-          var F = player.forwardDirection();
+        if (turn == 1){
+			if (this.hasNewSwing()) {
+			  
+			  var F = player.forwardDirection();
 
-			player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
-			this.resetSwing();
-          //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
-        }
-        
-        if (this.keyPressed(overdrive.settings.players[0].keys.reverse)) {
-          
-          var F = player.forwardDirection();
-          
-          player.applyForce(player.mBody.position, { x : -F.x * player.forwardForce, y : -F.y * player.forwardForce });
-        }
-        
-        if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
-          
-          Matter.Body.setAngularVelocity(player.mBody, 0);
-          player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
-        }
-        
-        if (this.keyPressed(overdrive.settings.players[0].keys.right)) {
-          
-          Matter.Body.setAngularVelocity(player.mBody, 0);
-          player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
-        }
-      }
+				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
+				player.score = player.score +1;
+				this.resetSwing();
+				turn = 2;
+				
+			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
+			}
+			if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
+			  
+			  Matter.Body.setAngularVelocity(player.mBody, 0);
+			  player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			}
+			
+			if (this.keyPressed(overdrive.settings.players[0].keys.right)) {
+			  
+			  Matter.Body.setAngularVelocity(player.mBody, 0);
+			  player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			}
+		}
+	  }
       
       
     }
@@ -816,33 +813,30 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       }
       else if (inputMethod == OverDrive.Game.InputMode.Keyboard) {
       
-        if (this.keyPressed(overdrive.settings.players[1].keys.forward)) {
-          
-          var F = player.forwardDirection();
-          
-          player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
-        }
-        
-        if (this.keyPressed(overdrive.settings.players[1].keys.reverse)) {
-          
-          var F = player.forwardDirection();
-          
-          player.applyForce(player.mBody.position, { x : -F.x * player.forwardForce, y : -F.y * player.forwardForce });
-        }
-        
-        if (this.keyPressed(overdrive.settings.players[1].keys.left)) {
-          
-          Matter.Body.setAngularVelocity(player.mBody, 0);
-          player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
-          //player.rotate(-Math.PI * player.rotateSpeed);
-        }
-        
-        if (this.keyPressed(overdrive.settings.players[1].keys.right)) {
-          
-          Matter.Body.setAngularVelocity(player.mBody, 0);
-          player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
-          //player.rotate(Math.PI * player.rotateSpeed);
-        }
+        if (turn == 2){
+			if (this.hasNewSwing()) {
+			  
+			  var F = player.forwardDirection();
+
+				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
+				player.score = player.score +1;
+				this.resetSwing();
+				turn = 1;
+				
+			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
+			}
+			if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
+			  
+			  Matter.Body.setAngularVelocity(player.mBody, 0);
+			  player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			}
+			
+			if (this.keyPressed(overdrive.settings.players[0].keys.right)) {
+			  
+			  Matter.Body.setAngularVelocity(player.mBody, 0);
+			  player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			}
+		}
       }
     }
     

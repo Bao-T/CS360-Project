@@ -117,9 +117,9 @@ OverDrive.Game = (function(gamelib, canvas, context) {
           keys : {
             
             forward : 'Q',
-            reverse : 'A',
-            left : 'Z',
-            right : 'X'
+            reverse : 'E',
+            left : 'A',
+            right : 'D'
           }
         },
         
@@ -129,9 +129,9 @@ OverDrive.Game = (function(gamelib, canvas, context) {
           keys : {
             
             forward : 'P',
-            reverse : 'L',
-            left : 'N',
-            right : 'M'
+            reverse : 'E',
+            left : 'A',
+            right : 'D'
           }
         }
       ],
