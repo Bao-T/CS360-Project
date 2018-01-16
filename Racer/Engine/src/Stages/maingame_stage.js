@@ -753,27 +753,16 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			if (this.hasNewSwing()) {
 			  
 			  var F = player.forwardDirection();
-
+				
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
 				this.resetSwing();
 				turn = 2;
-				if (level != 1){
-					level = 1;
-					this.preTransition();
-					}
-				//this.renderMainScene();
-				
-				
-				
-				
-				
-				
-				
+
 			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
 			}
 			if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
-			  
+			 
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
 			  player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
 			}
@@ -784,6 +773,23 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			  player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
 			  
 			}
+			//currently used to switch maps. Implement when both players make it into the hole.
+			if (player.score == 3){
+				      player.score = 0;
+					  if (level == 1)
+						  level = 2;
+					  else
+						  level=1;
+					  Matter.World.clear(overdrive.engine.world, false);
+					  self.regions = null; // track regions
+					  self.sceneryRegions = null;
+					
+					  self.baseTime = 0;
+					  self.lapTime = 0;
+					
+					this.preTransition();
+					this.init();
+					}
 		}
 	  }
       
