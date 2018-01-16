@@ -35,7 +35,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         
         let size = { width : w * self.scale * config.boundingVolumeScale, height : h * self.scale * config.boundingVolumeScale };
         
-        self.mBody = Bodies.circle(config.x, config.y, 10);
+        self.mBody = Bodies.circle(config.x, config.y, 8);
         Body.setAngle(self.mBody, config.angle);
         self.size = size;
         
