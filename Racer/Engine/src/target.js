@@ -6,7 +6,10 @@ OverDrive.Game = (function (gamelib, canvas, context) {
         this.size = { width: 60, height: 60 };
         this.scale = 1;
 
-        this.sprite = new OverDrive.Game.Sprite('Assets/Images/target.png');
+        this.sprite = new OverDrive.Game.Sprite('Assets/Images/target.png', function (w, h) {
+            self.size.width = w;
+            self.size.height = h;
+        });
 
         this.draw = function (x, y) {
 
