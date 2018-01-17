@@ -28,7 +28,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
 		//context.drawImage(arrow, x, y, self.image.width * scale, self.image.height * scale); 
       }
     }
-	 this.drawball = function(x, y, scale) {
+	 this.drawball = function(x, y, scale,currTurn) {
     
       if (self.spriteLoaded) {
 		context.save();
@@ -36,7 +36,11 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         context.drawImage(self.image, x, y, self.image.width * scale, self.image.height * scale);
 		context.restore();
 		context.save();
-		fader = fader + 0.01;
+		if(currTurn){
+		fader = fader + 0.01;}
+		else{
+			fader = 0;
+		}
 		if (fader >= 1){
 			fader = -1
 		}
