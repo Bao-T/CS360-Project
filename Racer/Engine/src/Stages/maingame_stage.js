@@ -11,7 +11,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
   
     var self = this;
     
-    this.pos = { x : canvas.width / 2, y : canvas.height / 2};
+    this.pos = { x : canvas.width /2, y : canvas.height / 2};
     this.width = canvas.width;
     this.height = canvas.height;
     
@@ -119,6 +119,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   var rotateSpeed2 = 15;
   var x_holePoint = 0;
   var y_holePoint = 0;
+  var scoreboard1=[];
+  var scoreboard2=[];
   
   //
   // Public interface
@@ -738,7 +740,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     
     this.updatePlayer1 = function(player, deltaTime, env) {
-      
+      console.log("player1: " + player.mBody.position.x + " " + player.mBody.position.y)
       // Limit player velocity
       if (player.mBody.speed > player_top_speed) {
         
