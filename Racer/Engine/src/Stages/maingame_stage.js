@@ -183,7 +183,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     this.pickupTypes = null; // Pickup TYPES
     this.pickupArray = null; // Pickup INSTANCES
-    
+    this.target = new OverDrive.Game.Target();
     
     //
     // Stage interface implementation
@@ -424,6 +424,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getMouseDown = this.getMouseDown
+
+    this.isInSwing = function() {
+      return self.mouseButton && self.mousePositions.length>1;
+    }
 
     //Has there been a new swing since the last time we checked?
     this.hasNewSwing = function () {
@@ -726,6 +730,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         self.player2.draw(turn == 2);
         //self.player2.drawBoundingVolume('#FFF');
       }
+
+      if (this.isInSwing()) {
+        var p = this.mousePositions[0];
+        this.target.draw(p.x,p.y);
+      }
       
       // Render pickups
       OverDrive.Game.drawObjects(self.pickupArray);
@@ -768,7 +777,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 				turn = 2;
 
 			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
-			}
+      }
+      
 			if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
 			 
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
@@ -780,7 +790,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
 			  player.rotate((Math.PI/180) * rotateSpeed1 * (deltaTime/1000));
 			  
-			}
+      }
+      
 			//currently used to switch maps. Implement when both players make it into the hole.
 			if (player.score == 3){
 				      
