@@ -722,7 +722,27 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
         self.backgroundImage.draw();
       }
-      
+
+        //currently used to switch maps. Implement when both players make it into the hole.
+      if (self.player1.finished && self.player2.finished) {
+          level = (level + 1) % tracks.length;
+
+          Matter.World.clear(overdrive.engine.world, false);
+          self.regions = null; // track regions
+          self.sceneryRegions = null;
+
+          self.paused = false;
+          self.levelComplete = false;
+
+          self.baseTime = overdrive.gameClock.gameTimeElapsed();
+          self.lapTime = 0;
+
+          self.raceStarted = true;
+
+          this.preTransition();
+          this.init();
+      }
+
       // Draw player1
       if (self.player1 && self.player1.finished == false) {
       
@@ -819,29 +839,6 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			  player.rotate((Math.PI/180) * rotateSpeed1 * (deltaTime/1000));
 			  
       }
-      
-			//currently used to switch maps. Implement when both players make it into the hole.
-			if (player.score == -1){
-				      
-					  if (level == 1)
-						  level = 2;
-					  else
-						  level=1;
-					  Matter.World.clear(overdrive.engine.world, false);
-					  self.regions = null; // track regions
-					  self.sceneryRegions = null;
-					
-					  self.paused = false;
-					self.levelComplete = false;
-				
-					self.baseTime = overdrive.gameClock.gameTimeElapsed();
-					self.lapTime = 0;
-					
-					self.raceStarted = true;
-					
-					this.preTransition();
-					this.init();
-					}
 		}
 	  }
       
