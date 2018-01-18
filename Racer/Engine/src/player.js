@@ -64,7 +64,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
     // Rendering interface
     //
     
-    this.draw = function() {
+    this.draw = function(currTurn) {
     
       if (this.mBody) {
         
@@ -77,7 +77,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         context.rotate(theta);
         context.translate(-this.sprite.image.width * this.scale / 2, -this.sprite.image.height * this.scale / 2);
 
-        this.sprite.drawball(0, 0, this.scale);
+        this.sprite.drawball(0, 0, this.scale,currTurn);
         
         context.restore();
       }

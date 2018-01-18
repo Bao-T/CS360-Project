@@ -11,7 +11,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
   
     var self = this;
     
-    this.pos = { x : canvas.width / 2, y : canvas.height / 2};
+    this.pos = { x : canvas.width /2, y : canvas.height / 2};
     this.width = canvas.width;
     this.height = canvas.height;
     
@@ -111,10 +111,16 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   let overdrive = OverDrive.Game.system;
   let tracks = OverDrive.Game.tracks;
   let scenery = OverDrive.Game.scenery;
-
+  
   
   let lapsToWin = 1;
-  var level = 2;
+  var level = 1;
+  var rotateSpeed1 = 15;
+  var rotateSpeed2 = 15;
+  var x_holePoint = 0;
+  var y_holePoint = 0;
+  var scoreboard1=[];
+  var scoreboard2=[];
   
   //
   // Public interface
@@ -195,7 +201,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
     
     this.init = function() {
-
+		
       // Setup keyboard
       if (self.keyDown === null) {
       
@@ -218,8 +224,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       $(document).mouseup(self.onMouseUp);
       
       var track = tracks[level - 1];
-      
-      
+      var currScenery = scenery[level -1]
+	  x_holePoint = currScenery.holepoint.x;
+      y_holePoint = currScenery.holepoint.y;
       // Call front-end method to setup key elements of game environment
 	  self.setup();
       self.path = new OverDrive.Game.Path(self.regions, overdrive.engine.world, lapsToWin);
@@ -335,14 +342,16 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         
           collector.addPoints(0);
         }
-      });
-
+      } );
+      
+      
       self.countDownSecondsElapsed = 0;
       overdrive.gameClock.tick();
       
       self.raceStarted = false;
-      
-      window.requestAnimationFrame(self.phaseInLoop);
+      if(level == 1){
+      window.requestAnimationFrame(self.phaseInLoop);}
+	  
     }
 
     this.getDist = function (p1, p2) {
@@ -416,16 +425,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
     stage.MainGame.prototype.getMouseDown = this.getMouseDown
 
-    //Are we currently in a swing?
-    this.isInNewSwing = function () {
-        return self.mouseButton && this.mousePositions.length > 0;
-    }
-
-    this.getFirstSwing = function () {
-        if (this.mousePositions.length > 0)
-            return this.mousePositions[0];
-        else
-            return { x: 0, y: 0, ts: overdrive.gameClock.actualTimeElapsed() };
+    this.isInSwing = function() {
+      return self.mouseButton && self.mousePositions.length>1;
     }
 
     //Has there been a new swing since the last time we checked?
@@ -642,7 +643,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       self.leaveState.params = null;
     }
     
-
+    
     // Event handling functions
     
     this.onKeyDown = function(event) {
@@ -715,26 +716,26 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
         self.backgroundImage.draw();
       }
-
+      
       // Draw player1
       if (self.player1) {
       
-        self.player1.draw();
+        self.player1.draw(turn == 1);
         //self.player1.drawBoundingVolume('#FFF');
       }
     
       // Draw player2
       if (self.player2) {
     
-        self.player2.draw();
+        self.player2.draw(turn == 2);
         //self.player2.drawBoundingVolume('#FFF');
       }
 
-      if (self.isInNewSwing()) {
-          self.target.draw(this.mousePositions[0].x, this.mousePositions[0].y);
+      if (this.isInSwing()) {
+        var p = this.mousePositions[0];
+        this.target.draw(p.x,p.y);
       }
-
-
+      
       // Render pickups
       OverDrive.Game.drawObjects(self.pickupArray);
     }
@@ -748,7 +749,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     
     this.updatePlayer1 = function(player, deltaTime, env) {
-      
+      console.log("player1: " + player.mBody.position.x + " " + player.mBody.position.y)
       // Limit player velocity
       if (player.mBody.speed > player_top_speed) {
         
@@ -769,37 +770,50 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			if (this.hasNewSwing()) {
 			  
 			  var F = player.forwardDirection();
-
+				
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
 				this.resetSwing();
 				turn = 2;
-				if (level != 1){
-					level = 1;
-					this.preTransition();
-					}
-				//this.renderMainScene();
-				
-				
-				
-				
-				
-				
-				
+
 			  //player.applyForce(player.mBody.position, { x : F.x * player.forwardForce, y : F.y * player.forwardForce });
-			}
+      }
+      
 			if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
-			  
+			 
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
-			  player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			  player.rotate((-Math.PI/180) * rotateSpeed1 * (deltaTime/1000));
 			}
 			
 			if (this.keyPressed(overdrive.settings.players[0].keys.right)) {
 			  
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
-			  player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			  player.rotate((Math.PI/180) * rotateSpeed1 * (deltaTime/1000));
 			  
-			}
+      }
+      
+			//currently used to switch maps. Implement when both players make it into the hole.
+			if (player.score == 3){
+				      
+					  if (level == 1)
+						  level = 2;
+					  else
+						  level=1;
+					  Matter.World.clear(overdrive.engine.world, false);
+					  self.regions = null; // track regions
+					  self.sceneryRegions = null;
+					
+					  self.paused = false;
+					self.levelComplete = false;
+				
+					self.baseTime = overdrive.gameClock.gameTimeElapsed();
+					self.lapTime = 0;
+					
+					self.raceStarted = true;
+					
+					this.preTransition();
+					this.init();
+					}
 		}
 	  }
       
@@ -841,13 +855,13 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 			if (this.keyPressed(overdrive.settings.players[0].keys.left)) {
 			  
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
-			  player.rotate((-Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			  player.rotate((-Math.PI/180) * rotateSpeed2 * (deltaTime/1000));
 			}
 			
 			if (this.keyPressed(overdrive.settings.players[0].keys.right)) {
 			  
 			  Matter.Body.setAngularVelocity(player.mBody, 0);
-			  player.rotate((Math.PI/180) * player.rotateSpeed * (deltaTime/1000));
+			  player.rotate((Math.PI/180) * rotateSpeed2 * (deltaTime/1000));
 			}
 		}
       }
