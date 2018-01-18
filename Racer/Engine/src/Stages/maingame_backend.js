@@ -121,7 +121,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
                             y : track.players[0].pos.y * canvas.height,
                             angle : track.players[0].angle,
                             scale : track.players[0].scale,
-                            rotateSpeed : 15,//0.04,
+                            rotateSpeed : 30,//0.04,
                             forwardForce : 0.005,
                             spriteURI : track.players[0].playerImageURI,
                             world : overdrive.engine.world,
@@ -148,7 +148,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
                             y : track.players[1].pos.y * canvas.height,
                             angle : track.players[1].angle,
                             scale : track.players[1].scale,
-                            rotateSpeed : 15,//0.01,
+                            rotateSpeed : 30,//0.01,
                             forwardForce : 0.005,
                             spriteURI : track.players[1].playerImageURI,
                             world : overdrive.engine.world,
@@ -210,6 +210,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     document.getElementById('spf').innerHTML = 'SPF = ' + overdrive.gameClock.frameCounter.getAverageSPF();
     document.getElementById('velo').innerHTML = 'Velocity = ' + stage.MainGame.prototype.getLastVelocity();
     document.getElementById('error').innerHTML = 'Error = ' + stage.MainGame.prototype.getLastError();
+	document.getElementById('SB1').innerHTML = 'Player 1 Score: ' + stage.MainGame.prototype.getScore1();
+	document.getElementById('SB2').innerHTML = 'Player 2 Score: ' + stage.MainGame.prototype.getScore2();
   }
   
   stage.MainGame.prototype.player1CrossedFinishLine = function() {

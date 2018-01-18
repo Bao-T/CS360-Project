@@ -115,10 +115,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   
   let lapsToWin = 1;
   var level = 1;
-  var rotateSpeed1 = 15;
-  var rotateSpeed2 = 15;
-  var x_holePoint = 0;
-  var y_holePoint = 0;
+  var rotateSpeed1 = 30;
+  var rotateSpeed2 = 30;
+  //var x_holePoint = 0;
+  //var y_holePoint = 0;
   var scoreboard1=[];
   var scoreboard2=[];
   //Decides which player can move.
@@ -327,27 +327,62 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       self.pickupArray = [];
       self.pickup_timer = pickup_time_delay;
       
-      self.pickupTypes['points_pickup'] = new OverDrive.Pickup.PickupType(
+      self.pickupTypes['flag'] = new OverDrive.Pickup.PickupType(
       {
         spriteURI : 'Assets//Images//red-flag.png',
         collisionGroup : 0,
         handler : function(collector) {
         
           collector.finished = true;
-		  console.log(collector);
+		  if (collector == self.player1)
+			  scoreboard1[level-1] = self.player1.score;
+		  else if (collector == self.player2)
+			  scoreboard2[level-1] = self.player2.score;
+		  //console.log(collector);
+		  console.log(scoreboard1[level-1] + " " + scoreboard2[level-1]);
         }
       } );
-      /*
-      self.pickupTypes['points_pickup2'] = new OverDrive.Pickup.PickupType(
+      //Increase Speed
+      self.pickupTypes['pickup1'] = new OverDrive.Pickup.PickupType(
       {
         spriteURI : 'Assets//Images//coin2.png',
-        collisionGroup : 0,
+        collisionGroup : 1,
         handler : function(collector) {
         
           collector.addPoints(0);
         }
       } );
-	  */
+	  //Decrease Speed
+	  self.pickupTypes['pickup2'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//coin2.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+          collector.addPoints(0);
+        }
+      } );
+	  //Increase Error
+	  self.pickupTypes['pickup3'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//coin2.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+          collector.addPoints(0);
+        }
+      } );
+	  //Decrease Error
+	  self.pickupTypes['pickup4'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//coin2.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+          collector.addPoints(0);
+        }
+      } );
+	  
       
       
       self.countDownSecondsElapsed = 0;
@@ -494,7 +529,15 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getLastError = this.getLastError
-
+	
+	this.getScore1=function()
+	{return scoreboard1;}
+	this.getScore2=function()
+	{return scoreboard2;}
+	
+	stage.MainGame.prototype.getScore1 = this.getScore1
+	stage.MainGame.prototype.getScore2 = this.getScore2
+	
     this.phaseInLoop = function() {
       
       // Update clock
@@ -540,25 +583,45 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         window.requestAnimationFrame(self.mainLoopActual);
       }
     }
-    
+    var pickupCounter = 0;
     this.mainLoopActual = function() {
       
       // Manage pickups
-      let pickupStatus = OverDrive.Pickup.processPickups(
-        self.pickupTypes,
-        overdrive.engine,
-        self.pickup_timer,
-        overdrive.gameClock.convertTimeIntervalToSeconds(overdrive.gameClock.deltaTime),
-        self.regions);
-      
-      self.pickup_timer = pickupStatus.timer;
-      
-      if (pickupStatus.newPickup) {
-      
-        Matter.World.add(overdrive.engine.world, [pickupStatus.newPickup.mBody]); 
-        self.pickupArray.push(pickupStatus.newPickup);
-      }
-    
+	  if (pickupCounter ==0){
+		  let pickupStatus = OverDrive.Pickup.processPickups(
+			self.pickupTypes,
+			overdrive.engine,
+			self.pickup_timer,
+			overdrive.gameClock.convertTimeIntervalToSeconds(overdrive.gameClock.deltaTime),
+			self.regions,true);
+		  
+		  self.pickup_timer = pickupStatus.timer;
+		  
+		  if (pickupStatus.newPickup) {
+		  
+			Matter.World.add(overdrive.engine.world, [pickupStatus.newPickup.mBody]); 
+			self.pickupArray.push(pickupStatus.newPickup);
+	  }
+	   pickupCounter++;
+	  }
+	  else if (pickupCounter >0 &&pickupCounter <7)
+	  {
+		  let pickupStatus = OverDrive.Pickup.processPickups(
+			self.pickupTypes,
+			overdrive.engine,
+			self.pickup_timer,
+			overdrive.gameClock.convertTimeIntervalToSeconds(overdrive.gameClock.deltaTime),
+			self.regions,false);
+		  
+		  self.pickup_timer = pickupStatus.timer;
+		  
+		  if (pickupStatus.newPickup) {
+		  
+			Matter.World.add(overdrive.engine.world, [pickupStatus.newPickup.mBody]); 
+			self.pickupArray.push(pickupStatus.newPickup);
+		}
+		pickupCounter++;
+	  }
     
       self.mainLoop();
     }
@@ -742,7 +805,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
           self.lapTime = 0;
 
           self.raceStarted = true;
-
+		  pickupCounter = 0;
           this.preTransition();
           this.init();
       }
@@ -819,7 +882,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         // Keyboard input
         if (turn == 1){
 			if (this.hasNewSwing()) {
-			  player.rotate((Math.PI/180)*this.getLastError()/3);
+			  player.rotate((Math.PI/180)*this.getLastError());
 			  var F = player.forwardDirection();
 			  console.log(this.getLastError());
 				
@@ -871,7 +934,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
         if (turn == 2 ){
 			if (this.hasNewSwing()) {
-			  player.rotate((Math.PI/180)*this.getLastError()/3);
+			  player.rotate((Math.PI/180)*this.getLastError());
 			  var F = player.forwardDirection();
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
