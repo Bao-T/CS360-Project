@@ -219,10 +219,13 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       $(document).on('keyup', self.onKeyUp);
       $(document).on('keydown', self.onKeyDown);
-      $(document).mousemove(self.onMouseMove);
-      $(document).mousedown(self.onMouseDown);
-      $(document).mouseup(self.onMouseUp);
-      
+      canvas.addEventListener('mousedown', self.onMouseDown, false);
+      canvas.addEventListener('mousemove', self.onMouseMove, false);
+      canvas.addEventListener('mouseup', self.onMouseUp, false);
+      //canvas.mousemove(self.onMouseMove);
+      //canvas.mousedown(self.onMouseDown);
+      //canvas.mouseup(self.onMouseUp);
+
       var track = tracks[level - 1];
       var currScenery = scenery[level -1]
 	  x_holePoint = currScenery.holepoint.x;
@@ -600,9 +603,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       // Tear-down stage
       $(document).on('keyup', self.onKeyUp);
       $(document).on('keydown', self.onKeyDown);
-      $(document).mousemove(self.onMouseMove);
-      $(document).mousedown(self.onMouseDown);
-      $(document).mouseup(self.onMouseUp);
+      canvas.addEventListener('mousedown', self.onMouseDown, false);
+      canvas.addEventListener('mousemove', self.onMouseMove, false);
+      canvas.addEventListener('mouseup', self.onMouseUp, false);
 
       Matter.Events.off(OverDrive.Game.system.engine);
       
@@ -629,6 +632,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
       // Setup leave state parameters and target - this is explicit!
       self.leaveState.id = 'mainMenu';
+
       self.leaveState.params = {}; // params setup as required by target state
       
       
@@ -674,7 +678,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.onMouseMove = function (event) {
         //only track mouse movement if the button is down.
         if (self.mouseButton) {
-            self.mousePositions.push({ x: event.pageX, y: event.pageY, ts: overdrive.gameClock.actualTimeElapsed() });
+            self.mousePositions.push({ x: event.offsetX, y: event.offsetY, ts: overdrive.gameClock.actualTimeElapsed() });
         }
     }
     
@@ -734,12 +738,29 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       }
 
       if (this.isInSwing()) {
-        var p = this.mousePositions[0];
+          var p = this.normalisePoint(this.mousePositions[0]);
+
         this.target.draw(p.x,p.y);
       }
       
       // Render pickups
       OverDrive.Game.drawObjects(self.pickupArray);
+    }
+
+
+    this.normalisePoint = function (p) {
+        var x = p.x;
+        var y = p.y;
+        x = x / canvas.width;
+        y = y / canvas.height;
+        x = x * self.orthoCamera.width;
+        y = y * self.orthoCamera.height;
+        x = x + self.orthoCamera.pos.x - (self.orthoCamera.width / 2);
+        y = y + self.orthoCamera.pos.y - (self.orthoCamera.height / 2);
+
+        console.log('<' + p.x + ',' + p.y + '> --- <' + Math.floor(x) + ', ' + Math.floor(y) + '>');
+
+        return { x: x, y: y, ts: p.ts };
     }
     
     
