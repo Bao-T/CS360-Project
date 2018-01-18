@@ -259,7 +259,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     var self = this;
     
-    window.requestAnimationFrame(self.initPhaseOut);
+    //window.requestAnimationFrame(self.initPhaseOut);
   }
   
   

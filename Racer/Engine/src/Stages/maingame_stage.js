@@ -633,7 +633,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       self.winnerMessage = self.winner.pid + ' Wins!!!!!';
       
-      window.requestAnimationFrame(self.phaseOutLoop);
+      //window.requestAnimationFrame(self.phaseOutLoop);
     }
     
     this.phaseOutLoop = function() {

@@ -29,14 +29,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     this.drawNewAnimationFrame();
     
-    if (this.player1CrossedFinishLine() || this.player2CrossedFinishLine()) {
-      
-      this.leaveGameLoop();
-    }
-    else {
+  
+    
       
       this.repeatGameLoop();
-    }
+    
   }
   
   
