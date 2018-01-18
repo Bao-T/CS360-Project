@@ -795,10 +795,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         // Keyboard input
         if (turn == 1){
 			if (this.hasNewSwing()) {
-			  
+			  player.rotate((Math.PI/180)*this.getLastError()/3);
 			  var F = player.forwardDirection();
+			  console.log(this.getLastError());
 				
-				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
+				player.applyForce(player.mBody.position, { x : F.x  * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
 				this.resetSwing();
 				turn = 2;
@@ -869,9 +870,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
         if (turn == 2 ){
 			if (this.hasNewSwing()) {
-			  
+			  player.rotate((Math.PI/180)*this.getLastError()/3);
 			  var F = player.forwardDirection();
-
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
 				this.resetSwing();
