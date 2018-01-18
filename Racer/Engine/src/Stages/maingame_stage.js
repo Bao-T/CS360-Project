@@ -485,7 +485,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
             if (ep.ts == sp.ts)
                 return 100; //arbitrary error for "push" putt
             else {
-                console.log('<' + Math.floor(sp.x) + ',' + Math.floor(sp.y) + '> --- <' + Math.floor(ep.x) + ',' + Math.floor(ep.y) + '>');
+                //console.log('<' + Math.floor(sp.x) + ',' + Math.floor(sp.y) + '> --- <' + Math.floor(ep.x) + ',' + Math.floor(ep.y) + '>');
                 return self.getDist(sp, ep);
             }
         }
@@ -728,7 +728,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
         //currently used to switch maps. Implement when both players make it into the hole.
       if (self.player1.finished && self.player2.finished) {
-          level = level + 1;
+          level = (level % tracks.length) + 1;
+          console.log('level: ' + level + ' of track count: ' + tracks.length);
 
           Matter.World.clear(overdrive.engine.world, false);
           self.regions = null; // track regions
@@ -781,7 +782,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         x = x + self.orthoCamera.pos.x - (self.orthoCamera.width / 2);
         y = y + self.orthoCamera.pos.y - (self.orthoCamera.height / 2);
 
-        console.log('<' + p.x + ',' + p.y + '> --- <' + Math.floor(x) + ', ' + Math.floor(y) + '>');
+        //console.log('<' + p.x + ',' + p.y + '> --- <' + Math.floor(x) + ', ' + Math.floor(y) + '>');
 
         return { x: x, y: y, ts: p.ts };
     }
