@@ -334,7 +334,12 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         handler : function(collector) {
         
           collector.finished = true;
-		  console.log(collector);
+		  if (collector == self.player1)
+			  scoreboard1[level-1] = self.player1.score;
+		  else if (collector == self.player2)
+			  scoreboard2[level-1] = self.player2.score;
+		  //console.log(collector);
+		  console.log(scoreboard1[level-1] + " " + scoreboard2[level-1]);
         }
       } );
       //Increase Speed
@@ -524,7 +529,15 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
 
     stage.MainGame.prototype.getLastError = this.getLastError
-
+	
+	this.getScore1=function()
+	{return scoreboard1;}
+	this.getScore2=function()
+	{return scoreboard2;}
+	
+	stage.MainGame.prototype.getScore1 = this.getScore1
+	stage.MainGame.prototype.getScore2 = this.getScore2
+	
     this.phaseInLoop = function() {
       
       // Update clock
@@ -792,7 +805,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
           self.lapTime = 0;
 
           self.raceStarted = true;
-
+		  pickupCounter = 0;
           this.preTransition();
           this.init();
       }

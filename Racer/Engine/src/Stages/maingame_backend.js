@@ -210,6 +210,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     document.getElementById('spf').innerHTML = 'SPF = ' + overdrive.gameClock.frameCounter.getAverageSPF();
     document.getElementById('velo').innerHTML = 'Velocity = ' + stage.MainGame.prototype.getLastVelocity();
     document.getElementById('error').innerHTML = 'Error = ' + stage.MainGame.prototype.getLastError();
+	document.getElementById('SB1').innerHTML = 'Player1 Score: ' + stage.MainGame.prototype.getScore1();
+	document.getElementById('SB2').innerHTML = 'Player2 Score: ' + stage.MainGame.prototype.getScore2();
   }
   
   stage.MainGame.prototype.player1CrossedFinishLine = function() {
