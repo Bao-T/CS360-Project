@@ -22,7 +22,7 @@ OverDrive.Pickup = (function(lib, canvas, context) {
     
     this.type = config.type;
     this.scale = pickup_sprite_scale;
-    
+    console.log(config.pos.x+" "+config.pos.y);
     var size = { width : this.type.sprite.image.width * this.scale * config.boundingVolumeScale,
                  height : this.type.sprite.image.height * this.scale * config.boundingVolumeScale };
         
@@ -30,6 +30,7 @@ OverDrive.Pickup = (function(lib, canvas, context) {
                                 
       config.pos.x,
       config.pos.y,
+	  
       size.width,
       size.height,
       {
@@ -43,8 +44,8 @@ OverDrive.Pickup = (function(lib, canvas, context) {
     
     
     // DEBUG
-    //var vertices = self.mBody.vertices;
-    //console.log('pickup at : ' + vertices[0].x + ', ' + vertices[0].y);
+    var vertices = self.mBody.vertices;
+    console.log('pickup at : ' + vertices[0].x + ', ' + vertices[0].y);
     
       
       
@@ -109,11 +110,14 @@ OverDrive.Pickup = (function(lib, canvas, context) {
     
     this.collideWithPlayer = function(player, env) {
       
-      self.type.handler(player);
+     self.type.handler(player);
       
       // Remove from collections
-      Matter.World.remove(OverDrive.Game.system.engine.world, self.mBody);
+	  //console.log(self.type.collisionGroup);
+	  //if(self.type.collisionGroup!=0)
+	  Matter.World.remove(OverDrive.Game.system.engine.world, self.mBody);
       env.host.pickupArray.splice(env.host.pickupArray.indexOf(self), 1);
+	  
     }
     
     this.collideWithProjectile = function(otherPickup, env) {}
@@ -133,7 +137,8 @@ OverDrive.Pickup = (function(lib, canvas, context) {
     
     if (pickupTime <= 0) {
       
-      let rIndex = Math.floor(Math.random() * (regions.length - 1));
+      //let rIndex = Math.floor(Math.random() * (regions.length - 1));
+	  let rIndex = regions.length - 1;
       let pos = Matter.Vertices.centre(regions[rIndex].collisionModel.vertices);
       
       pos.x *= canvas.width;
@@ -147,9 +152,11 @@ OverDrive.Pickup = (function(lib, canvas, context) {
       newPickup = new lib.Pickup( { pos : pos,
                                 type : pickupTypes[typeKey],
                                 world : engine.world,
-                                boundingVolumeScale : 0.75,
+                                boundingVolumeScale : 0.15,
                                 isStatic : true
                               } );
+							  
+	   //console.log(pickupTypes[typeKey]);
       
       // Reset
       pickupTime = pickup_time_delay;

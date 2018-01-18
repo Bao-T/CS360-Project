@@ -121,7 +121,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   var y_holePoint = 0;
   var scoreboard1=[];
   var scoreboard2=[];
-  
+  //Decides which player can move.
+  var turn = 1;
   //
   // Public interface
   //
@@ -154,8 +155,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       id : null,
       params : null
     };
-	//Decides which player can move.
-    var turn = 1;
+	
     // Main game-state specific variables
     
     this.trackIndex = 0;
@@ -329,14 +329,15 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       self.pickupTypes['points_pickup'] = new OverDrive.Pickup.PickupType(
       {
-        spriteURI : 'Assets//Images//coin1.png',
+        spriteURI : 'Assets//Images//red-flag.png',
         collisionGroup : 0,
         handler : function(collector) {
         
-          collector.addPoints(0);
+          collector.finished = true;
+		  console.log(collector);
         }
       } );
-      
+      /*
       self.pickupTypes['points_pickup2'] = new OverDrive.Pickup.PickupType(
       {
         spriteURI : 'Assets//Images//coin2.png',
@@ -346,6 +347,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
           collector.addPoints(0);
         }
       } );
+	  */
       
       
       self.countDownSecondsElapsed = 0;
@@ -722,15 +724,15 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       }
       
       // Draw player1
-      if (self.player1) {
+      if (self.player1 && self.player1.finished == false) {
       
         self.player1.draw(turn == 1);
         //self.player1.drawBoundingVolume('#FFF');
       }
-    
+
       // Draw player2
-      if (self.player2) {
-    
+      if (self.player2 && self.player2.finished == false) {
+		
         self.player2.draw(turn == 2);
         //self.player2.drawBoundingVolume('#FFF');
       }
@@ -770,7 +772,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     
     this.updatePlayer1 = function(player, deltaTime, env) {
+		console.log(self.player1.finished);
       //console.log("player1: " + player.mBody.position.x + " " + player.mBody.position.y)
+	  if(self.player2.finished == true)
+		turn = 1;
+	  
       // Limit player velocity
       if (player.mBody.speed > player_top_speed) {
         
@@ -814,7 +820,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       }
       
 			//currently used to switch maps. Implement when both players make it into the hole.
-			if (player.score == 3){
+			if (player.score == -1){
 				      
 					  if (level == 1)
 						  level = 2;
@@ -843,7 +849,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
 
     this.updatePlayer2 = function(player, deltaTime, env) {
-      
+		
+      if(self.player1.finished == true)
+		turn = 2;
       // Limit player velocity
       if (player.mBody.speed > player_top_speed) {
         
@@ -859,7 +867,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       if (inputMethod == OverDrive.Game.InputMode.Keyboard) {
       
-        if (turn == 2){
+        if (turn == 2 ){
 			if (this.hasNewSwing()) {
 			  
 			  var F = player.forwardDirection();
