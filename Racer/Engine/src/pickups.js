@@ -114,9 +114,9 @@ OverDrive.Pickup = (function(lib, canvas, context) {
       
       // Remove from collections
 	  //console.log(self.type.collisionGroup);
-	  //if(self.type.collisionGroup!=0)
+	  if(self.type.collisionGroup!=0){
 	  Matter.World.remove(OverDrive.Game.system.engine.world, self.mBody);
-      env.host.pickupArray.splice(env.host.pickupArray.indexOf(self), 1);
+      env.host.pickupArray.splice(env.host.pickupArray.indexOf(self), 1);}
 	  
     }
     

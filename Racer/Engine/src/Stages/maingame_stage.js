@@ -751,7 +751,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     
     this.updatePlayer1 = function(player, deltaTime, env) {
-		console.log(self.player1.finished);
+		//console.log(self.player1.finished);
       //console.log("player1: " + player.mBody.position.x + " " + player.mBody.position.y)
 	  if(self.player2.finished == true)
 		turn = 1;
