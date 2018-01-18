@@ -115,10 +115,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   
   let lapsToWin = 1;
   var level = 1;
-  var rotateSpeed1 = 30;
-  var rotateSpeed2 = 30;
-  //var x_holePoint = 0;
-  //var y_holePoint = 0;
+  var rotateSpeed1 = 15;
+  var rotateSpeed2 = 15;
+  var x_holePoint = 0;
+  var y_holePoint = 0;
   var scoreboard1=[];
   var scoreboard2=[];
   //Decides which player can move.
@@ -882,7 +882,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         // Keyboard input
         if (turn == 1){
 			if (this.hasNewSwing()) {
-			  player.rotate((Math.PI/180)*this.getLastError());
+			  player.rotate((Math.PI/180)*this.getLastError()/3);
 			  var F = player.forwardDirection();
 			  console.log(this.getLastError());
 				
@@ -934,7 +934,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
         if (turn == 2 ){
 			if (this.hasNewSwing()) {
-			  player.rotate((Math.PI/180)*this.getLastError());
+			  player.rotate((Math.PI/180)*this.getLastError()/3);
 			  var F = player.forwardDirection();
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
