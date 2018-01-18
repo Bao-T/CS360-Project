@@ -16,7 +16,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         Composite = Matter.Composite;
     
     var self = this;
-    
+    this.finished = false;
     this.strength = 100;
     this.score = 0;
     this.scale = config.scale;

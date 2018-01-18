@@ -121,7 +121,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   var y_holePoint = 0;
   var scoreboard1=[];
   var scoreboard2=[];
-  
+  //Decides which player can move.
+  var turn = 1;
   //
   // Public interface
   //
@@ -154,8 +155,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       id : null,
       params : null
     };
-	//Decides which player can move.
-    var turn = 1;
+	
     // Main game-state specific variables
     
     this.trackIndex = 0;
@@ -219,10 +219,13 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       $(document).on('keyup', self.onKeyUp);
       $(document).on('keydown', self.onKeyDown);
-      $(document).mousemove(self.onMouseMove);
-      $(document).mousedown(self.onMouseDown);
-      $(document).mouseup(self.onMouseUp);
-      
+      canvas.addEventListener('mousedown', self.onMouseDown, false);
+      canvas.addEventListener('mousemove', self.onMouseMove, false);
+      canvas.addEventListener('mouseup', self.onMouseUp, false);
+      //canvas.mousemove(self.onMouseMove);
+      //canvas.mousedown(self.onMouseDown);
+      //canvas.mouseup(self.onMouseUp);
+
       var track = tracks[level - 1];
       var currScenery = scenery[level -1]
 	  x_holePoint = currScenery.holepoint.x;
@@ -326,14 +329,15 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       self.pickupTypes['points_pickup'] = new OverDrive.Pickup.PickupType(
       {
-        spriteURI : 'Assets//Images//coin1.png',
+        spriteURI : 'Assets//Images//red-flag.png',
         collisionGroup : 0,
         handler : function(collector) {
         
-          collector.addPoints(0);
+          collector.finished = true;
+		  console.log(collector);
         }
       } );
-      
+      /*
       self.pickupTypes['points_pickup2'] = new OverDrive.Pickup.PickupType(
       {
         spriteURI : 'Assets//Images//coin2.png',
@@ -343,6 +347,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
           collector.addPoints(0);
         }
       } );
+	  */
       
       
       self.countDownSecondsElapsed = 0;
@@ -598,9 +603,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       // Tear-down stage
       $(document).on('keyup', self.onKeyUp);
       $(document).on('keydown', self.onKeyDown);
-      $(document).mousemove(self.onMouseMove);
-      $(document).mousedown(self.onMouseDown);
-      $(document).mouseup(self.onMouseUp);
+      canvas.addEventListener('mousedown', self.onMouseDown, false);
+      canvas.addEventListener('mousemove', self.onMouseMove, false);
+      canvas.addEventListener('mouseup', self.onMouseUp, false);
 
       Matter.Events.off(OverDrive.Game.system.engine);
       
@@ -627,6 +632,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
       // Setup leave state parameters and target - this is explicit!
       self.leaveState.id = 'mainMenu';
+
       self.leaveState.params = {}; // params setup as required by target state
       
       
@@ -672,7 +678,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     this.onMouseMove = function (event) {
         //only track mouse movement if the button is down.
         if (self.mouseButton) {
-            self.mousePositions.push({ x: event.pageX, y: event.pageY, ts: overdrive.gameClock.actualTimeElapsed() });
+            self.mousePositions.push({ x: event.offsetX, y: event.offsetY, ts: overdrive.gameClock.actualTimeElapsed() });
         }
     }
     
@@ -718,26 +724,43 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       }
       
       // Draw player1
-      if (self.player1) {
+      if (self.player1 && self.player1.finished == false) {
       
         self.player1.draw(turn == 1);
         //self.player1.drawBoundingVolume('#FFF');
       }
-    
+
       // Draw player2
-      if (self.player2) {
-    
+      if (self.player2 && self.player2.finished == false) {
+		
         self.player2.draw(turn == 2);
         //self.player2.drawBoundingVolume('#FFF');
       }
 
       if (this.isInSwing()) {
-        var p = this.mousePositions[0];
+          var p = this.normalisePoint(this.mousePositions[0]);
+
         this.target.draw(p.x,p.y);
       }
       
       // Render pickups
       OverDrive.Game.drawObjects(self.pickupArray);
+    }
+
+
+    this.normalisePoint = function (p) {
+        var x = p.x;
+        var y = p.y;
+        x = x / canvas.width;
+        y = y / canvas.height;
+        x = x * self.orthoCamera.width;
+        y = y * self.orthoCamera.height;
+        x = x + self.orthoCamera.pos.x - (self.orthoCamera.width / 2);
+        y = y + self.orthoCamera.pos.y - (self.orthoCamera.height / 2);
+
+        console.log('<' + p.x + ',' + p.y + '> --- <' + Math.floor(x) + ', ' + Math.floor(y) + '>');
+
+        return { x: x, y: y, ts: p.ts };
     }
     
     
@@ -749,7 +772,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
     
     this.updatePlayer1 = function(player, deltaTime, env) {
-      console.log("player1: " + player.mBody.position.x + " " + player.mBody.position.y)
+		console.log(self.player1.finished);
+      //console.log("player1: " + player.mBody.position.x + " " + player.mBody.position.y)
+	  if(self.player2.finished == true)
+		turn = 1;
+	  
       // Limit player velocity
       if (player.mBody.speed > player_top_speed) {
         
@@ -793,7 +820,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       }
       
 			//currently used to switch maps. Implement when both players make it into the hole.
-			if (player.score == 3){
+			if (player.score == -1){
 				      
 					  if (level == 1)
 						  level = 2;
@@ -822,7 +849,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
 
     this.updatePlayer2 = function(player, deltaTime, env) {
-      
+		
+      if(self.player1.finished == true)
+		turn = 2;
       // Limit player velocity
       if (player.mBody.speed > player_top_speed) {
         
@@ -838,7 +867,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       if (inputMethod == OverDrive.Game.InputMode.Keyboard) {
       
-        if (turn == 2){
+        if (turn == 2 ){
 			if (this.hasNewSwing()) {
 			  
 			  var F = player.forwardDirection();
