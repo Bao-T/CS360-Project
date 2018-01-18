@@ -129,13 +129,13 @@ OverDrive.Pickup = (function(lib, canvas, context) {
   
   
   // Global pickup handler.  Return an object with the new pickup timer value and any new pickup object that has been created
-  lib.processPickups = function(pickupTypes, engine, pickupTime, tDelta, regions) {
+  lib.processPickups = function(pickupTypes, engine, pickupTime, tDelta, regions,isHole) {
     
     var newPickup = null;
     
     pickupTime -= tDelta;
     
-    if (pickupTime <= 0) {
+    if (isHole) {
       
       //let rIndex = Math.floor(Math.random() * (regions.length - 1));
 	  let rIndex = regions.length - 1;
@@ -146,7 +146,7 @@ OverDrive.Pickup = (function(lib, canvas, context) {
       
       let keys = Object.keys(pickupTypes);
       let numKeys = keys.length;
-      let keyIndex = (Math.round(Math.random() * numKeys)) % numKeys;
+      let keyIndex = 0;
       let typeKey = keys[keyIndex];
       
       newPickup = new lib.Pickup( { pos : pos,
@@ -159,8 +159,30 @@ OverDrive.Pickup = (function(lib, canvas, context) {
 	   //console.log(pickupTypes[typeKey]);
       
       // Reset
-      pickupTime = pickup_time_delay;
+      //pickupTime = pickup_time_delay;
     }
+	
+	else{
+      let rIndex = Math.floor(Math.random() * (regions.length - 2));
+	  console.log(Matter.Vertices.centre(regions[rIndex].collisionModel.vertices));
+      let pos = Matter.Vertices.centre(regions[rIndex].collisionModel.vertices);
+      
+      pos.x *= canvas.width;
+      pos.y *= canvas.height;
+      
+      let keys = Object.keys(pickupTypes);
+      let numKeys = keys.length;
+      let keyIndex = (Math.round(Math.random() * numKeys)) % (numKeys-1) + 1;
+      let typeKey = keys[keyIndex];
+      
+      newPickup = new lib.Pickup( { pos : pos,
+                                type : pickupTypes[typeKey],
+                                world : engine.world,
+                                boundingVolumeScale : 0.15,
+                                isStatic : true
+                              } );
+		
+	}
     
     return {
         

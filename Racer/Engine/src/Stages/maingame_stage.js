@@ -327,7 +327,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       self.pickupArray = [];
       self.pickup_timer = pickup_time_delay;
       
-      self.pickupTypes['points_pickup'] = new OverDrive.Pickup.PickupType(
+      self.pickupTypes['flag'] = new OverDrive.Pickup.PickupType(
       {
         spriteURI : 'Assets//Images//red-flag.png',
         collisionGroup : 0,
@@ -337,17 +337,47 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 		  console.log(collector);
         }
       } );
-      /*
-      self.pickupTypes['points_pickup2'] = new OverDrive.Pickup.PickupType(
+      //Increase Speed
+      self.pickupTypes['pickup1'] = new OverDrive.Pickup.PickupType(
       {
         spriteURI : 'Assets//Images//coin2.png',
-        collisionGroup : 0,
+        collisionGroup : 1,
         handler : function(collector) {
         
           collector.addPoints(0);
         }
       } );
-	  */
+	  //Decrease Speed
+	  self.pickupTypes['pickup2'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//coin2.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+          collector.addPoints(0);
+        }
+      } );
+	  //Increase Error
+	  self.pickupTypes['pickup3'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//coin2.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+          collector.addPoints(0);
+        }
+      } );
+	  //Decrease Error
+	  self.pickupTypes['pickup4'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//coin2.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+          collector.addPoints(0);
+        }
+      } );
+	  
       
       
       self.countDownSecondsElapsed = 0;
@@ -537,25 +567,45 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         window.requestAnimationFrame(self.mainLoopActual);
       }
     }
-    
+    var pickupCounter = 0;
     this.mainLoopActual = function() {
       
       // Manage pickups
-      let pickupStatus = OverDrive.Pickup.processPickups(
-        self.pickupTypes,
-        overdrive.engine,
-        self.pickup_timer,
-        overdrive.gameClock.convertTimeIntervalToSeconds(overdrive.gameClock.deltaTime),
-        self.regions);
-      
-      self.pickup_timer = pickupStatus.timer;
-      
-      if (pickupStatus.newPickup) {
-      
-        Matter.World.add(overdrive.engine.world, [pickupStatus.newPickup.mBody]); 
-        self.pickupArray.push(pickupStatus.newPickup);
-      }
-    
+	  if (pickupCounter ==0){
+		  let pickupStatus = OverDrive.Pickup.processPickups(
+			self.pickupTypes,
+			overdrive.engine,
+			self.pickup_timer,
+			overdrive.gameClock.convertTimeIntervalToSeconds(overdrive.gameClock.deltaTime),
+			self.regions,true);
+		  
+		  self.pickup_timer = pickupStatus.timer;
+		  
+		  if (pickupStatus.newPickup) {
+		  
+			Matter.World.add(overdrive.engine.world, [pickupStatus.newPickup.mBody]); 
+			self.pickupArray.push(pickupStatus.newPickup);
+	  }
+	   pickupCounter++;
+	  }
+	  else if (pickupCounter >0 &&pickupCounter <7)
+	  {
+		  let pickupStatus = OverDrive.Pickup.processPickups(
+			self.pickupTypes,
+			overdrive.engine,
+			self.pickup_timer,
+			overdrive.gameClock.convertTimeIntervalToSeconds(overdrive.gameClock.deltaTime),
+			self.regions,false);
+		  
+		  self.pickup_timer = pickupStatus.timer;
+		  
+		  if (pickupStatus.newPickup) {
+		  
+			Matter.World.add(overdrive.engine.world, [pickupStatus.newPickup.mBody]); 
+			self.pickupArray.push(pickupStatus.newPickup);
+		}
+		pickupCounter++;
+	  }
     
       self.mainLoop();
     }
