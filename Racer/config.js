@@ -13,7 +13,7 @@ const player_mass = 0.5; // Larger number means it takes longer to accelerate to
 
 const player_move_speed = 1; // Bigger number = faster!
 
-const player_top_speed = 50;
+const player_top_speed = 20;
 
 const player_rotate_speed = 0.4; // Bigger number = faster!
 
