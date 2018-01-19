@@ -336,7 +336,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         spriteURI : 'Assets//Images//red-flag.png',
         collisionGroup : 0,
         handler : function(collector) {
-        
+          OverDrive.Game.system.playMusic3();
           collector.finished = true;
 		  if (collector == self.player1)
 			  scoreboard1[level-1] = self.player1.score;
@@ -419,9 +419,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         handler : function(collector) {
         
 			if (collector == self.player1)
-				{rotateSpeed1 *=4;}
+				{rotateSpeed1 *=2;}
 			else if (collector == self.player2)
-				{rotateSpeed2 *=4;}
+				{rotateSpeed2 *=2;}
         }
       } );
       
@@ -941,6 +941,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         // Keyboard input
         if (turn == 1){
 			if (this.hasNewSwing()) {
+			  OverDrive.Game.system.playMusic2();
 			  player.rotate((Math.PI/180)*this.getLastError()*player1Error);
 			  var F = player.forwardDirection();
 			  console.log(this.getLastError());
@@ -993,6 +994,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
         if (turn == 2 ){
 			if (this.hasNewSwing()) {
+		      OverDrive.Game.system.playMusic2();
 			  player.rotate((Math.PI/180)*this.getLastError()*player2Error);
 			  var F = player.forwardDirection();
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
