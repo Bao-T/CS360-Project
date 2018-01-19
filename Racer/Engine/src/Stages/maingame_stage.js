@@ -645,7 +645,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 	   pickupCounter++;
 	  }
 	  
-	  else if (pickupCounter >0 &&pickupCounter <Math.floor(tracks[level - 1].regions.length/2)+1)
+	  else if (pickupCounter >0 && pickupCounter <5)
 	  {
 		  let pickupStatus = OverDrive.Pickup.processPickups(
 			self.pickupTypes,
