@@ -331,17 +331,17 @@ OverDrive.Game = (function(gamelib, canvas, context) {
     
     this.playMusic1 = function() {
       
-      music1.play(0, self.playMusic2);
+      music1.play(0, self.playMusic1);
     }
     
     this.playMusic2 = function() {
       
-      music2.play(0, self.playMusic3);
+      music2.play();
     }
     
     this.playMusic3 = function() {
       
-      music3.play(0, self.playMusic1);
+      music3.play();
     }
     
     
@@ -357,7 +357,7 @@ OverDrive.Game = (function(gamelib, canvas, context) {
       this.gainNode.connect(this.audioContext.destination);
       
       // Load sound library
-      loadDemoSoundAsync('Assets/Sounds/Kyes_music.m4a', function(buffer) {
+      loadDemoSoundAsync('Assets/Sounds/music.mp3', function(buffer) {
         
         music1 = new gamelib.AudioResource(buffer);
         
@@ -365,12 +365,12 @@ OverDrive.Game = (function(gamelib, canvas, context) {
         self.playMusic1();
       });
       
-      loadDemoSoundAsync('Assets/Sounds/Mason_and_jack.m4a', function(buffer) {
+      loadDemoSoundAsync('Assets/Sounds/hit1_01.mp3', function(buffer) {
         
         music2 = new gamelib.AudioResource(buffer);
       });
       
-      loadDemoSoundAsync('Assets/Sounds/Kory_music.m4a', function(buffer) {
+      loadDemoSoundAsync('Assets/Sounds/dropincup_01.mp3', function(buffer) {
         
         music3 = new gamelib.AudioResource(buffer);
       });
