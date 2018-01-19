@@ -625,15 +625,23 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     
       self.mainLoop();
     }
+
+    this.pickWinner = function() {
+        if (self.player1.score == self.player2.score)
+            return self.player1;
+        else
+            return self.player1.score < self.player2.score ? self.player1 : self.player2;
+    }
     
-    this.initPhaseOut = function() {
+    this.initPhaseOut = function () {
+      if (self.winner !== null)
+        return;
       
-      // Add 200 points for winner
-      self.winner.score += 200;
+      self.winner = self.pickWinner();
       
       self.winnerMessage = self.winner.pid + ' Wins!!!!!';
       
-      //window.requestAnimationFrame(self.phaseOutLoop);
+      window.requestAnimationFrame(self.phaseOutLoop);
     }
     
     this.phaseOutLoop = function() {
@@ -660,9 +668,11 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
     
     this.leaveStage = function() {
+
+      var w = self.winner;
     
       // Add to leaderboard
-      overdrive.scores.push({name : self.winner.pid, score : self.winner.score});
+      overdrive.scores.push({name : w.pid, score : w.score});
       overdrive.sortScores();
       
       
@@ -697,9 +707,9 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       self.pickupArray = null;
     
       // Setup leave state parameters and target - this is explicit!
-      self.leaveState.id = 'mainMenu';
+      self.leaveState.id = 'winnerScreen';
 
-      self.leaveState.params = {}; // params setup as required by target state
+      self.leaveState.params = {winner: w.pid}; // params setup as required by target state
       
       
       var target = self.transitionLinks[self.leaveState.id];
@@ -752,7 +762,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     // Stage processing functions
     
     this.renderMainScene = function() {
-      
+      if (self.orthoCamera === null)
+        return;
+
+
       // Update camera
       self.orthoCamera.calculateCameraWindow(self.player1, self.player2);
       
@@ -791,23 +804,28 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
         //currently used to switch maps. Implement when both players make it into the hole.
       if (self.player1.finished && self.player2.finished) {
-          level = (level % tracks.length) + 1;
-          console.log('level: ' + level + ' of track count: ' + tracks.length);
+          if (true) { //(level == tracks.length) {
+              self.initPhaseOut();
+          }
+          else {
+              level = (level % tracks.length) + 1;
+              console.log('level: ' + level + ' of track count: ' + tracks.length);
 
-          Matter.World.clear(overdrive.engine.world, false);
-          self.regions = null; // track regions
-          self.sceneryRegions = null;
+              Matter.World.clear(overdrive.engine.world, false);
+              self.regions = null; // track regions
+              self.sceneryRegions = null;
 
-          self.paused = false;
-          self.levelComplete = false;
+              self.paused = false;
+              self.levelComplete = false;
 
-          self.baseTime = overdrive.gameClock.gameTimeElapsed();
-          self.lapTime = 0;
+              self.baseTime = overdrive.gameClock.gameTimeElapsed();
+              self.lapTime = 0;
 
-          self.raceStarted = true;
-		  pickupCounter = 0;
-          this.preTransition();
-          this.init();
+              self.raceStarted = true;
+              pickupCounter = 0;
+              this.preTransition();
+              this.init();
+          }
       }
 
       // Draw player1
