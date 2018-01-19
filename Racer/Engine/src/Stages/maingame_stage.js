@@ -115,8 +115,12 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
   
   let lapsToWin = 1;
   var level = 1;
+  //Variables affected by pickup
   var rotateSpeed1 = 30;
   var rotateSpeed2 = 30;
+  var player1Error = 1;
+  var player2Error = 1;
+  
   //var x_holePoint = 0;
   //var y_holePoint = 0;
   var scoreboard1=[];
@@ -342,44 +346,49 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 		  console.log(scoreboard1[level-1] + " " + scoreboard2[level-1]);
         }
       } );
-      //Increase Speed
+      //decrease Speed
       self.pickupTypes['pickup1'] = new OverDrive.Pickup.PickupType(
       {
-        spriteURI : 'Assets//Images//coin2.png',
+        spriteURI : 'Assets//Images//frictionminus.png',
         collisionGroup : 1,
         handler : function(collector) {
-        
-          collector.addPoints(0);
+			console.log("decreaseSpeed")
+          Matter.Body.setMass(collector.mBody, 1.5);
         }
       } );
-	  //Decrease Speed
+	  //increase Speed
 	  self.pickupTypes['pickup2'] = new OverDrive.Pickup.PickupType(
       {
-        spriteURI : 'Assets//Images//coin2.png',
+        spriteURI : 'Assets//Images//frictionplus.png',
         collisionGroup : 1,
         handler : function(collector) {
-        
-          collector.addPoints(0);
+			Matter.Body.setMass(collector.mBody, .3);
+        //collector.addPoints(0);
         }
       } );
 	  //Increase Error
 	  self.pickupTypes['pickup3'] = new OverDrive.Pickup.PickupType(
       {
-        spriteURI : 'Assets//Images//coin2.png',
+        spriteURI : 'Assets//Images//badputtericon.png',
         collisionGroup : 1,
         handler : function(collector) {
-        
-          collector.addPoints(0);
+			if (collector == self.player1)
+				{player1Error++; console.log("Inc player1 error");}
+			else if (collector == self.player2)
+				{player2Error++; console.log("Inc player2 error");}
         }
       } );
 	  //Decrease Error
 	  self.pickupTypes['pickup4'] = new OverDrive.Pickup.PickupType(
       {
-        spriteURI : 'Assets//Images//coin2.png',
+        spriteURI : 'Assets//Images//goodputtericon.png',
         collisionGroup : 1,
         handler : function(collector) {
         
-          collector.addPoints(0);
+			if (collector == self.player1)
+				{player1Error--; console.log("Dec player1 error");}
+			else if (collector == self.player2)
+				{player2Error--; console.log("Dec player2 error");}
         }
       } );
 	  
@@ -585,7 +594,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
     }
     var pickupCounter = 0;
     this.mainLoopActual = function() {
-      
+      //console.log(Math.floor(tracks[level - 1].regions.length/2)+1);
       // Manage pickups
 	  if (pickupCounter ==0){
 		  let pickupStatus = OverDrive.Pickup.processPickups(
@@ -604,7 +613,8 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 	  }
 	   pickupCounter++;
 	  }
-	  else if (pickupCounter >0 &&pickupCounter <7)
+	  
+	  else if (pickupCounter >0 &&pickupCounter <Math.floor(tracks[level - 1].regions.length/2)+1)
 	  {
 		  let pickupStatus = OverDrive.Pickup.processPickups(
 			self.pickupTypes,
@@ -793,7 +803,10 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       if (self.player1.finished && self.player2.finished) {
           level = (level % tracks.length) + 1;
           console.log('level: ' + level + ' of track count: ' + tracks.length);
-
+		  player1Error = 1;
+          player2Error = 1;
+		  Matter.Body.setMass(player1.mBody, .5);
+		  Matter.Body.setMass(player1.mBody, .5);
           Matter.World.clear(overdrive.engine.world, false);
           self.regions = null; // track regions
           self.sceneryRegions = null;
@@ -882,7 +895,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         // Keyboard input
         if (turn == 1){
 			if (this.hasNewSwing()) {
-			  player.rotate((Math.PI/180)*this.getLastError());
+			  player.rotate((Math.PI/180)*this.getLastError()*player1Error);
 			  var F = player.forwardDirection();
 			  console.log(this.getLastError());
 				
@@ -934,7 +947,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
         if (turn == 2 ){
 			if (this.hasNewSwing()) {
-			  player.rotate((Math.PI/180)*this.getLastError());
+			  player.rotate((Math.PI/180)*this.getLastError()*player2Error);
 			  var F = player.forwardDirection();
 				player.applyForce(player.mBody.position, { x : F.x * this.getLastVelocity()*0.00001, y : F.y * this.getLastVelocity()*0.00001 });
 				player.score = player.score +1;
