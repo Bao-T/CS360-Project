@@ -9,7 +9,15 @@ OverDrive.Stages.Credits = (function(stage, canvas, context) {
   var creditFont = '30pt Amatic SC';
   
   var credits = [
-  
+
+      'Whitworth University CS 360',
+      '----------------------------',
+      'Team Lead: Bao Tran',
+      'Creative Lead: Colleen Bell',
+      'Cranky Old Man: Pete Tucker',
+
+      '  ',
+
     'The Wonky Donkey Crew',
     '---------------------',
     'Jade',
