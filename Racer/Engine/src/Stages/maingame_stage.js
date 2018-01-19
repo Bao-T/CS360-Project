@@ -669,7 +669,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
     this.pickWinner = function() {
         if (self.player1.score == self.player2.score)
-            return self.player1;
+            return null;
         else
             return self.player1.score < self.player2.score ? self.player1 : self.player2;
     }
@@ -680,7 +680,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       
       self.winner = self.pickWinner();
       
-      self.winnerMessage = self.winner.pid + ' Wins!!!!!';
+      self.winnerMessage = self.winner === null ? 'Tie!!!!!' : self.winner.pid + ' Wins!!!!!';
       
       window.requestAnimationFrame(self.phaseOutLoop);
     }
@@ -845,7 +845,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 
         //currently used to switch maps. Implement when both players make it into the hole.
       if (self.player1.finished && self.player2.finished) {
-          if (true) { //(level == tracks.length) {
+          if (level == tracks.length) {
               self.initPhaseOut();
           }
           else {

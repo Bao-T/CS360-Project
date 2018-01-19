@@ -7,6 +7,7 @@ OverDrive.Stages.WinnerScreen = (function(stage, canvas, context) {
   let overdrive = OverDrive.Game.system;
   
   let winnerScreen = 'Assets/Images/trophy.jpg';
+  var optionFont = '30pt Amatic SC';
   let appearTime = 1; // time in seconds
   let disappearTime = 2; // time in seconds
   
@@ -49,7 +50,8 @@ OverDrive.Stages.WinnerScreen = (function(stage, canvas, context) {
     this.backgroundImage = null;
     this.timeElapsed = 0;
     this.keyDown = null;
-    
+    this.optionExtent = { maxWidth: 0 };
+
     
     //
     // Stage interface implementation
@@ -57,13 +59,15 @@ OverDrive.Stages.WinnerScreen = (function(stage, canvas, context) {
     
     // Pre-start stage with relevant parameters
     // Not called for initial state!
-    this.preTransition = function(params) {}
+    this.preTransition = function (params) {
+        self.winner = params.winner;
+    }
     
     
     this.init = function() {
       
       self.backgroundImage = new OverDrive.Game.Background(winnerScreen);
-      
+
       if (self.keyDown === null) {
       
         self.keyDown = new Array(256);
@@ -106,7 +110,8 @@ OverDrive.Stages.WinnerScreen = (function(stage, canvas, context) {
     }
     
     this.mainLoop = function() {
-            
+      self.draw();
+
       if (self.keyPressed()) {
         
         window.requestAnimationFrame(self.initPhaseOut);
@@ -199,6 +204,29 @@ OverDrive.Stages.WinnerScreen = (function(stage, canvas, context) {
       }
       
       return isPressed;
+    }
+  
+    this.draw = function() {
+
+      // Draw background        
+      if (this.backgroundImage) {
+        
+        context.globalAlpha = 0.4;
+        this.backgroundImage.draw();
+      }
+      
+      context.globalAlpha = 1;
+      context.fillStyle = '#FFF';
+      context.font = optionFont;
+            
+      
+      // Left-aligned text
+      var baseX = (canvas.width - this.optionExtent.maxWidth) / 2;
+      var textY = 250;
+      
+      var txt = 'Winner: ' + self.winner;
+
+      context.fillText(txt, baseX, textY);
     }
     
   };
