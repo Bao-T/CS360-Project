@@ -331,16 +331,17 @@ OverDrive.Game = (function(gamelib, canvas, context) {
     
     this.playMusic1 = function() {
       
-      music1.play(0, self.playMusic1);
+      if (music1)
+        music1.play(0, self.playMusic1);
     }
     
     this.playMusic2 = function() {
-      
-      music2.play();
+      if (music2)
+        music2.play();
     }
     
     this.playMusic3 = function() {
-      
+      if (music3)
       music3.play();
     }
     
