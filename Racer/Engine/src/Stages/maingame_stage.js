@@ -362,7 +362,7 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
         spriteURI : 'Assets//Images//frictionplus.png',
         collisionGroup : 1,
         handler : function(collector) {
-			Matter.Body.setMass(collector.mBody, .3);
+			Matter.Body.setMass(collector.mBody, .2);
         //collector.addPoints(0);
         }
       } );
@@ -391,8 +391,39 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
 				{player2Error--; console.log("Dec player2 error");}
         }
       } );
-	  
-      
+	  //Decrease Score
+	  self.pickupTypes['pickup5'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//minusone.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+			collector.score--;
+        }
+      } );
+	  //increase Score
+	  self.pickupTypes['pickup6'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//plusone.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+			collector.score++;
+        }
+      } );
+      //increase rotation
+	  self.pickupTypes['pickup6'] = new OverDrive.Pickup.PickupType(
+      {
+        spriteURI : 'Assets//Images//speedplus.png',
+        collisionGroup : 1,
+        handler : function(collector) {
+        
+			if (collector == self.player1)
+				{rotateSpeed1 *=4;}
+			else if (collector == self.player2)
+				{rotateSpeed2 *=4;}
+        }
+      } );
       
       self.countDownSecondsElapsed = 0;
       overdrive.gameClock.tick();
@@ -803,10 +834,12 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
       if (self.player1.finished && self.player2.finished) {
           level = (level % tracks.length) + 1;
           console.log('level: ' + level + ' of track count: ' + tracks.length);
+		  rotateSpeed1 = 30;
+		  rotateSpeed2 = 30;
 		  player1Error = 1;
           player2Error = 1;
-		  Matter.Body.setMass(player1.mBody, .5);
-		  Matter.Body.setMass(player1.mBody, .5);
+		  Matter.Body.setMass(self.player1.mBody, .5);
+		  Matter.Body.setMass(self.player2.mBody, .5);
           Matter.World.clear(overdrive.engine.world, false);
           self.regions = null; // track regions
           self.sceneryRegions = null;
