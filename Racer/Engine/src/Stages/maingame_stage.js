@@ -851,11 +851,14 @@ OverDrive.Stages.MainGame = (function(stage, canvas, context) {
           else {
               level = (level % tracks.length) + 1;
               console.log('level: ' + level + ' of track count: ' + tracks.length);
-
+                rotateSpeed1 = 30;
+				rotateSpeed2 = 30;
+				player1Error = 1;
+				player2Error = 1;
               Matter.World.clear(overdrive.engine.world, false);
               self.regions = null; // track regions
               self.sceneryRegions = null;
-
+			  self.pickupArray = null;
               self.paused = false;
               self.levelComplete = false;
 
