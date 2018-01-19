@@ -178,7 +178,7 @@ OverDrive.Pickup = (function(lib, canvas, context) {
       newPickup = new lib.Pickup( { pos : pos,
                                 type : pickupTypes[typeKey],
                                 world : engine.world,
-                                boundingVolumeScale : 0.5,
+                                boundingVolumeScale : 0.2,
                                 isStatic : true
                               } );
 		
